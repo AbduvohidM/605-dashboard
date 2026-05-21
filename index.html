@@ -399,7 +399,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
         <hr class="divider" style="margin:14px 0">
         <div class="form-row">
           <div class="form-group"><label>Mijoz</label><input class="db-input" id="inv-client" placeholder="Mijoz nomi" style="width:150px"></div>
-          <div class="form-group"><label>Summa (so'm)</label><input class="db-input" id="inv-amount" type="number" placeholder="5000000" style="width:130px"></div>
+          <div class="form-group"><label>Summa (so'm)</label><input class="db-input" id="inv-amount" type="number" placeholder="5000" style="width:130px"></div>
           <div class="form-group"><label>Kun kechikkan</label><input class="db-input" id="inv-days" type="number" placeholder="14" style="width:100px"></div>
           <div style="align-self:flex-end"><button class="db-btn" onclick="addInvoice()">+ Invoice</button></div>
         </div>
@@ -407,14 +407,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
       <div class="card">
         <div class="section-head"><h2>Ko'rsatkichlarni kiritish</h2></div>
         <div class="form-row" style="margin-bottom:10px">
-          <div class="form-group"><label>Daromad (so'm)</label><input class="db-input" id="inp-f-revenue" type="number" placeholder="12000000" style="width:150px"></div>
-          <div class="form-group"><label>Xarajat (so'm)</label><input class="db-input" id="inp-f-expenses" type="number" placeholder="8500000" style="width:150px"></div>
-          <div class="form-group"><label>Maqsad (so'm)</label><input class="db-input" id="inp-f-target" type="number" placeholder="15000000" style="width:150px"></div>
+          <div class="form-group"><label>Daromad (so'm)</label><input class="db-input" id="inp-f-revenue" type="number" placeholder="12000" style="width:150px"></div>
+          <div class="form-group"><label>Xarajat (so'm)</label><input class="db-input" id="inp-f-expenses" type="number" placeholder="8500" style="width:150px"></div>
+          <div class="form-group"><label>Maqsad (so'm)</label><input class="db-input" id="inp-f-target" type="number" placeholder="15000" style="width:150px"></div>
         </div>
         <div class="form-row">
-          <div class="form-group"><label>Cashflow qoldiq</label><input class="db-input" id="inp-f-cashflow" type="number" placeholder="6000000" style="width:150px"></div>
-          <div class="form-group"><label>Kirim</label><input class="db-input" id="inp-f-cfin" type="number" placeholder="14000000" style="width:140px"></div>
-          <div class="form-group"><label>Chiqim</label><input class="db-input" id="inp-f-cfout" type="number" placeholder="8500000" style="width:140px"></div>
+          <div class="form-group"><label>Cashflow qoldiq</label><input class="db-input" id="inp-f-cashflow" type="number" placeholder="6000" style="width:150px"></div>
+          <div class="form-group"><label>Kirim</label><input class="db-input" id="inp-f-cfin" type="number" placeholder="14000" style="width:140px"></div>
+          <div class="form-group"><label>Chiqim</label><input class="db-input" id="inp-f-cfout" type="number" placeholder="8500" style="width:140px"></div>
           <div style="align-self:flex-end"><button class="db-btn" onclick="saveFinance()">Saqlash</button></div>
         </div>
       </div>
@@ -469,7 +469,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
           <div class="form-row">
             <div class="form-group"><label>Mijoz</label><input class="db-input" id="sl-client" placeholder="Mijoz" style="width:130px"></div>
             <div class="form-group"><label>Xizmat</label><input class="db-input" id="sl-service" placeholder="SMM, Brand..." style="width:120px"></div>
-            <div class="form-group"><label>Summa</label><input class="db-input" id="sl-amount" type="number" placeholder="8000000" style="width:120px"></div>
+            <div class="form-group"><label>Summa</label><input class="db-input" id="sl-amount" type="number" placeholder="8000" style="width:120px"></div>
             <div class="form-group"><label>Bosqich</label><select class="db-input" id="sl-stage" style="width:130px"><option value="yangi">Yangi so'rov</option><option value="muzokaralar">Muzokaralar</option><option value="taklif">Taklif yuborildi</option><option value="yutildi">Yutildi</option><option value="yutqazildi">Yutqazildi</option></select></div>
             <div class="form-group"><label>Follow-up</label><input class="db-input" id="sl-followup" type="date" style="width:140px"></div>
             <div style="align-self:flex-end"><button class="db-btn" onclick="addDeal()">+ Deal</button></div>
@@ -503,7 +503,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
           <div class="form-group"><label>Ism</label><input class="db-input" id="kpi-name" placeholder="Ism" style="width:110px"></div>
           <div class="form-group"><label>Bo'lim</label><select class="db-input" id="kpi-dept" style="width:130px"><option>PM</option><option>Kreativ</option><option>Dizayner</option><option>SMM</option><option>Sotuv</option><option>Strategiya</option></select></div>
           <div class="form-group"><label>Lavozim</label><input class="db-input" id="kpi-role" placeholder="Lavozim" style="width:110px"></div>
-          <div class="form-group"><label>Fix maosh</label><input class="db-input" id="kpi-fix" type="number" placeholder="3000000" style="width:120px"></div>
+          <div class="form-group"><label>Fix maosh</label><input class="db-input" id="kpi-fix" type="number" placeholder="3000" style="width:120px"></div>
           <div class="form-group"><label>KPI ball (0-100)</label><input class="db-input" id="kpi-score" type="number" min="0" max="100" placeholder="78" style="width:100px"></div>
           <div class="form-group"><label>Bonus %</label><input class="db-input" id="kpi-bonus-pct" type="number" placeholder="30" style="width:80px"></div>
           <div style="align-self:flex-end"><button class="db-btn" onclick="addKpi()">+ Qo'shish</button></div>
@@ -899,26 +899,26 @@ function renderFinanceUI() {
   const margin = f.revenue ? Math.round(profit/f.revenue*100) : 0;
   const pct    = f.target  ? Math.round(f.revenue/f.target*100) : 0;
 
-  set('ov-revenue', f.revenue ? fmt(f.revenue)+' so\'m' : '—');
-  set('f-revenue',  f.revenue ? fmt(f.revenue)+' so\'m' : '—');
-  set('ov-target',  f.target  ? fmt(f.target)+' so\'m'  : '—');
-  set('f-target',   f.target  ? fmt(f.target)+' so\'m'  : '—');
-  set('ov-profit',  f.revenue ? fmt(profit)+' so\'m'    : '—');
-  set('f-profit',   f.revenue ? fmt(profit)+' so\'m'    : '—');
+  set('ov-revenue', f.revenue ? fmt(f.revenue)+'$' : '—');
+  set('f-revenue',  f.revenue ? fmt(f.revenue)+'$' : '—');
+  set('ov-target',  f.target  ? fmt(f.target)+'$'  : '—');
+  set('f-target',   f.target  ? fmt(f.target)+'$'  : '—');
+  set('ov-profit',  f.revenue ? fmt(profit)+'$'    : '—');
+  set('f-profit',   f.revenue ? fmt(profit)+'$'    : '—');
   const profEl = document.getElementById('f-profit');
   if (profEl) profEl.className = 'metric-val ' + (profit >= 0 ? 'green' : 'red');
   set('ov-margin', f.revenue ? margin+'%' : '—');
   set('f-margin',  f.revenue ? margin+'%' : '—');
-  set('f-expenses', f.expenses ? fmt(f.expenses)+' so\'m' : '—');
-  set('ov-cashflow', f.cashflow ? fmt(f.cashflow)+' so\'m' : '—');
-  set('f-cashflow',  f.cashflow ? fmt(f.cashflow)+' so\'m' : '—');
+  set('f-expenses', f.expenses ? fmt(f.expenses)+'$' : '—');
+  set('ov-cashflow', f.cashflow ? fmt(f.cashflow)+'$' : '—');
+  set('f-cashflow',  f.cashflow ? fmt(f.cashflow)+'$' : '—');
   const cfEl = document.getElementById('f-cashflow');
   if (cfEl) cfEl.className = 'metric-val ' + ((f.cashflow||0) >= 0 ? 'green' : 'red');
-  set('ov-cf-in',  f.cfin  ? '+'+fmt(f.cfin)+' so\'m'  : '—');
-  set('f-cf-in',   f.cfin  ? '+'+fmt(f.cfin)+' so\'m'  : '—');
-  set('ov-cf-out', f.cfout ? '-'+fmt(f.cfout)+' so\'m' : '—');
-  set('f-cf-out',  f.cfout ? '-'+fmt(f.cfout)+' so\'m' : '—');
-  set('f-balance', f.cfin && f.cfout ? fmt(f.cfin-f.cfout)+' so\'m' : '—');
+  set('ov-cf-in',  f.cfin  ? '+'+fmt(f.cfin)+'$'  : '—');
+  set('f-cf-in',   f.cfin  ? '+'+fmt(f.cfin)+'$'  : '—');
+  set('ov-cf-out', f.cfout ? '-'+fmt(f.cfout)+'$' : '—');
+  set('f-cf-out',  f.cfout ? '-'+fmt(f.cfout)+'$' : '—');
+  set('f-balance', f.cfin && f.cfout ? fmt(f.cfin-f.cfout)+'$' : '—');
 
   const rdelta = document.getElementById('ov-rdelta');
   if (rdelta) {
@@ -926,7 +926,7 @@ function renderFinanceUI() {
     else { rdelta.textContent = '—'; rdelta.className = 'delta neutral'; }
   }
   const total_ov = DB.invoices.reduce((a,x) => a+(x.amount||0), 0);
-  set('f-overdue',     total_ov ? fmt(total_ov)+' so\'m' : '—');
+  set('f-overdue',     total_ov ? fmt(total_ov)+'$' : '—');
   set('f-overdue-cnt', DB.invoices.length || '—');
   renderInvoices();
 }
@@ -946,7 +946,7 @@ function renderInvoices() {
   const el = document.getElementById('invoice-list'); if (!el) return;
   if (!DB.invoices.length) { el.innerHTML='<div style="font-size:13px;color:var(--text3);padding:8px 0">Hali invoice qo\'shilmagan</div>'; return; }
   el.innerHTML = `<table class="data-table"><thead><tr><th>Mijoz</th><th>Summa</th><th>Kechikkan</th><th></th></tr></thead><tbody>`+
-    DB.invoices.map((inv,i)=>`<tr><td>${inv.client}</td><td style="color:var(--red)">${fmt(inv.amount)} so'm</td><td><span class="badge ${inv.days>30?'red':inv.days>14?'amber':'blue'}">${inv.days} kun</span></td><td><button onclick="removeInvoice(${i})" style="background:none;border:none;cursor:pointer;color:var(--text3)">✕</button></td></tr>`).join('')+
+    DB.invoices.map((inv,i)=>`<tr><td>${inv.client}</td><td style="color:var(--red)">${fmt(inv.amount)}$</td><td><span class="badge ${inv.days>30?'red':inv.days>14?'amber':'blue'}">${inv.days} kun</span></td><td><button onclick="removeInvoice(${i})" style="background:none;border:none;cursor:pointer;color:var(--text3)">✕</button></td></tr>`).join('')+
     `</tbody></table>`;
 }
 
@@ -1075,12 +1075,12 @@ function removeDeal(i){DB.deals.splice(i,1);save();renderSalesUI();}
 
 function renderSalesUI(){
   const active=DB.deals.filter(d=>d.stage!=='yutqazildi'), won=DB.deals.filter(d=>d.stage==='yutildi').length, closed=DB.deals.filter(d=>d.stage==='yutildi'||d.stage==='yutqazildi').length, vol=active.reduce((a,d)=>a+d.amount,0), conv=closed>0?Math.round(won/closed*100):0;
-  set('sl-deals',active.length); set('sl-volume',vol?fmt(vol)+' so\'m':'—'); set('sl-won',won); set('sl-conv',closed>0?conv+'%':'—');
-  set('ov-pipeline',vol?fmt(vol)+' so\'m':'—'); set('ov-deals',active.length);
+  set('sl-deals',active.length); set('sl-volume',vol?fmt(vol)+'$':'—'); set('sl-won',won); set('sl-conv',closed>0?conv+'%':'—');
+  set('ov-pipeline',vol?fmt(vol)+'$':'—'); set('ov-deals',active.length);
   const tbody=document.getElementById('deals-tbody');
   if(tbody){
     if(!DB.deals.length){tbody.innerHTML='<tr><td colspan="6" style="color:var(--text3);text-align:center;padding:20px">Deal qo\'shilmagan</td></tr>';}
-    else tbody.innerHTML=DB.deals.map((d,i)=>{const sc=stageCfg[d.stage]||stageCfg.yangi; return `<tr><td style="font-weight:500">${d.client}</td><td style="color:var(--text3)">${d.service||'—'}</td><td style="font-family:var(--mono);font-size:12px">${d.amount?fmt(d.amount)+' so\'m':'—'}</td><td><span class="badge ${sc.cls}">${sc.label}</span></td><td style="font-size:12px;color:var(--text3)">${d.followup||'—'}</td><td><button onclick="removeDeal(${i})" style="background:none;border:none;cursor:pointer;color:var(--text3)">✕</button></td></tr>`;}).join('');
+    else tbody.innerHTML=DB.deals.map((d,i)=>{const sc=stageCfg[d.stage]||stageCfg.yangi; return `<tr><td style="font-weight:500">${d.client}</td><td style="color:var(--text3)">${d.service||'—'}</td><td style="font-family:var(--mono);font-size:12px">${d.amount?fmt(d.amount)+'$':'—'}</td><td><span class="badge ${sc.cls}">${sc.label}</span></td><td style="font-size:12px;color:var(--text3)">${d.followup||'—'}</td><td><button onclick="removeDeal(${i})" style="background:none;border:none;cursor:pointer;color:var(--text3)">✕</button></td></tr>`;}).join('');
   }
 }
 
@@ -1110,7 +1110,7 @@ function renderTeamUI(){
     else tbody.innerHTML=filtered.map((k,i)=>{
       const color=k.score>=80?'#4caf7d':k.score>=60?'#f5a623':'#f05a5a';
       const realIdx = DB.kpis.indexOf(k);
-      return `<tr><td style="font-weight:500">${k.name}</td><td><span class="badge ${k.dept==='Dizayner'?'purple':k.dept==='Kreativ'?'blue':k.dept==='PM'?'green':k.dept==='SMM'?'amber':'gray'}">${k.dept}</span></td><td style="color:var(--text3)">${k.role}</td><td style="font-family:var(--mono);font-size:12px">${fmt(k.fix)} so'm</td><td><div style="display:flex;align-items:center;gap:8px"><div class="prog-wrap" style="width:60px"><div class="prog-fill" style="width:${k.score}%;background:${color}"></div></div><span style="font-size:13px;color:${color};font-weight:500">${k.score}</span></div></td><td style="font-family:var(--mono);font-size:12px;color:var(--green)">+${fmt(k.bonus)} so'm</td><td style="font-family:var(--mono);font-size:12px;font-weight:500">${fmt(k.fix+k.bonus)} so'm</td><td><button onclick="removeKpi(${realIdx})" style="background:none;border:none;cursor:pointer;color:var(--text3)">✕</button></td></tr>`;
+      return `<tr><td style="font-weight:500">${k.name}</td><td><span class="badge ${k.dept==='Dizayner'?'purple':k.dept==='Kreativ'?'blue':k.dept==='PM'?'green':k.dept==='SMM'?'amber':'gray'}">${k.dept}</span></td><td style="color:var(--text3)">${k.role}</td><td style="font-family:var(--mono);font-size:12px">${fmt(k.fix)}$</td><td><div style="display:flex;align-items:center;gap:8px"><div class="prog-wrap" style="width:60px"><div class="prog-fill" style="width:${k.score}%;background:${color}"></div></div><span style="font-size:13px;color:${color};font-weight:500">${k.score}</span></div></td><td style="font-family:var(--mono);font-size:12px;color:var(--green)">+${fmt(k.bonus)}$</td><td style="font-family:var(--mono);font-size:12px;font-weight:500">${fmt(k.fix+k.bonus)}$</td><td><button onclick="removeKpi(${realIdx})" style="background:none;border:none;cursor:pointer;color:var(--text3)">✕</button></td></tr>`;
     }).join('');
   }
 }
@@ -1156,7 +1156,7 @@ function renderSalesPlanFact() {
     return `<tr>
       <td style="color:var(--text3)">${idx+1}</td>
       <td style="font-weight:500">${manager}</td>
-      <td style="font-family:var(--mono);font-size:12px">${plan ? fmt(plan)+" so'm" : '—'}</td>
+      <td style="font-family:var(--mono);font-size:12px">${plan ? fmt(plan)+"$" : '—'}</td>
       <td style="min-width:140px">
         <div style="display:flex;align-items:center;gap:8px">
           <div style="flex:1;background:var(--bg4);border-radius:4px;height:8px;overflow:hidden">
@@ -1165,8 +1165,8 @@ function renderSalesPlanFact() {
           <span style="font-size:12px;color:${color};min-width:35px;font-weight:500">${pct}%</span>
         </div>
       </td>
-      <td style="font-family:var(--mono);font-size:12px;color:var(--green)">${fact ? fmt(fact)+" so'm" : '—'}</td>
-      <td style="font-family:var(--mono);font-size:12px;color:var(--red)">${qolgan ? fmt(qolgan)+" so'm" : '—'}</td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--green)">${fact ? fmt(fact)+"$" : '—'}</td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--red)">${qolgan ? fmt(qolgan)+"$" : '—'}</td>
       <td><span class="badge green">${winCount} ta</span></td>
     </tr>`;
   }).join('');
@@ -1223,8 +1223,8 @@ function renderGaugeChart() {
   const annual2 = DB.annual || {};
   set('ov-sales-plan', annual2.salesPlan ? fmt(annual2.salesPlan) + ' ta' : '—');
   set('ov-sales-fact', annual2.salesFact ? fmt(annual2.salesFact) + ' ta' : '—');
-  set('ov-revenue-plan', annual2.revenuePlan ? fmt(annual2.revenuePlan) + " so'm" : '—');
-  set('ov-revenue-fact', annual2.revenueFact ? fmt(annual2.revenueFact) + " so'm" : '—');
+  set('ov-revenue-plan', annual2.revenuePlan ? fmt(annual2.revenuePlan) + "$" : '—');
+  set('ov-revenue-fact', annual2.revenueFact ? fmt(annual2.revenueFact) + "$" : '—');
   set('ov-year', new Date().getFullYear());
 }
 
