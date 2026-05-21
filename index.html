@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>605 Creative — Boshqaruv Paneli</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --bg:#0e0f11;--bg2:#161719;--bg3:#1e2023;--bg4:#252729;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --text:#f0f0ee;--text2:#9a9a96;--text3:#5a5a58;
+  --accent:#c8f060;--accent2:#a8d040;
+  --blue:#5b9cf6;--blue-bg:rgba(91,156,246,0.1);
+  --amber:#f5a623;--amber-bg:rgba(245,166,35,0.1);
+  --red:#f05a5a;--red-bg:rgba(240,90,90,0.1);
+  --green:#4caf7d;--green-bg:rgba(76,175,125,0.1);
+  --purple:#a78bfa;--purple-bg:rgba(167,139,250,0.1);
+  --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+  --radius:10px;--radius-lg:14px;--nav-w:220px;
+}
+[data-theme="light"] {
+  --bg:#f5f5f2;--bg2:#ffffff;--bg3:#efefeb;--bg4:#e5e5e0;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);
+  --text:#1a1a18;--text2:#5a5a56;--text3:#9a9a94;
+  --accent:#5a8a00;--accent2:#4a7a00;
+  --blue:#2563eb;--blue-bg:rgba(37,99,235,0.08);
+  --amber:#b45309;--amber-bg:rgba(180,83,9,0.08);
+  --red:#dc2626;--red-bg:rgba(220,38,38,0.08);
+  --green:#16a34a;--green-bg:rgba(22,163,74,0.08);
+  --purple:#7c3aed;--purple-bg:rgba(124,58,237,0.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+.logo-img-sidebar { width:32px;height:32px;border-radius:8px;object-fit:cover; }
+.logo-img-login { width:40px;height:40px;border-radius:10px;object-fit:cover; }
+
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.5}
+
+/* LOGIN */
+#login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000}
+.login-box{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:40px;width:360px}
+.login-logo{display:flex;align-items:center;gap:12px;margin-bottom:32px}
+.login-logo-box{width:40px;height:40px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px;color:#0e0f11}
+.login-logo-text{font-size:16px;font-weight:500}
+.login-logo-sub{font-size:12px;color:var(--text3)}
+.login-field{margin-bottom:14px}
+.login-field label{font-size:12px;color:var(--text3);display:block;margin-bottom:5px}
+.login-field input{width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);font-family:var(--font);font-size:13px;padding:9px 12px;border-radius:8px;outline:none;transition:border-color 0.15s}
+.login-field input:focus{border-color:var(--accent)}
+.login-btn{width:100%;background:var(--accent);color:#0e0f11;border:none;font-family:var(--font);font-size:14px;font-weight:500;padding:10px;border-radius:8px;cursor:pointer;margin-top:6px;transition:background 0.15s}
+.login-btn:hover{background:var(--accent2)}
+.login-error{font-size:12px;color:var(--red);margin-top:10px;display:none;text-align:center}
+.login-users{margin-top:24px;border-top:1px solid var(--border);padding-top:16px}
+.login-users-label{font-size:11px;color:var(--text3);margin-bottom:8px}
+.login-user-chip{display:inline-block;font-size:11px;background:var(--bg4);border:1px solid var(--border);color:var(--text2);padding:3px 10px;border-radius:20px;margin:2px;cursor:pointer;transition:all 0.15s}
+.login-user-chip:hover{border-color:var(--accent);color:var(--accent)}
+
+/* LAYOUT */
+.layout{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:var(--nav-w);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.sidebar-logo{padding:20px 20px 16px;border-bottom:1px solid var(--border)}
+.logo-mark{display:flex;align-items:center;gap:10px}
+.logo-box{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;color:#0e0f11}
+.logo-text{font-size:14px;font-weight:500;color:var(--text)}
+.logo-sub{font-size:11px;color:var(--text3);margin-top:1px}
+.sidebar-section{padding:16px 12px 8px}
+.sidebar-section-label{font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;padding:0 8px;margin-bottom:6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;color:var(--text2);font-size:13px;font-weight:400;transition:all 0.15s;margin-bottom:2px;border:none;background:none;width:100%;text-align:left}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:rgba(200,240,96,0.1);color:var(--accent)}
+.nav-item svg{width:16px;height:16px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.sidebar-footer{margin-top:auto;padding:16px 12px;border-top:1px solid var(--border)}
+.user-info{display:flex;align-items:center;gap:10px;padding:8px 10px;margin-bottom:8px}
+.user-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0}
+.user-name{font-size:13px;font-weight:500;color:var(--text)}
+.user-role-badge{font-size:10px;color:var(--text3)}
+.logout-btn{display:flex;align-items:center;gap:8px;width:100%;padding:7px 10px;border-radius:8px;border:none;background:none;color:var(--text3);font-family:var(--font);font-size:12px;cursor:pointer;transition:all 0.15s}
+.logout-btn:hover{background:var(--bg3);color:var(--red)}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;border-bottom:1px solid var(--border);background:var(--bg);flex-shrink:0}
+.page-title{font-size:18px;font-weight:500;color:var(--text)}
+.page-sub{font-size:12px;color:var(--text3);margin-top:2px}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.date-chip{font-size:12px;color:var(--text2);background:var(--bg3);border:1px solid var(--border);padding:5px 12px;border-radius:20px}
+.refresh-btn{background:var(--bg3);border:1px solid var(--border2);color:var(--text2);padding:6px 14px;border-radius:8px;font-size:12px;font-family:var(--font);cursor:pointer;transition:all 0.15s}
+.refresh-btn:hover{border-color:var(--accent);color:var(--accent)}
+.content{padding:24px 28px;flex:1}
+.page{display:none}.page.active{display:block}
+
+/* GRID */
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:20px}
+.grid-21{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:20px}
+
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px}
+.card-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:10px}
+.card-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:14px}
+.metric-val{font-size:28px;font-weight:500;color:var(--text);line-height:1;margin-bottom:6px;font-variant-numeric:tabular-nums}
+.metric-val.accent{color:var(--accent)}.metric-val.blue{color:var(--blue)}.metric-val.amber{color:var(--amber)}.metric-val.red{color:var(--red)}.metric-val.green{color:var(--green)}
+.metric-sub{font-size:12px;color:var(--text3);display:flex;align-items:center;gap:6px}
+.delta{font-size:11px;padding:2px 6px;border-radius:4px;font-weight:500}
+.delta.up{background:var(--green-bg);color:var(--green)}.delta.down{background:var(--red-bg);color:var(--red)}.delta.neutral{background:var(--bg4);color:var(--text3)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;font-size:11px;font-weight:500;padding:3px 8px;border-radius:20px}
+.badge.green{background:var(--green-bg);color:var(--green)}.badge.amber{background:var(--amber-bg);color:var(--amber)}.badge.red{background:var(--red-bg);color:var(--red)}.badge.blue{background:var(--blue-bg);color:var(--blue)}.badge.gray{background:var(--bg4);color:var(--text3)}.badge.purple{background:var(--purple-bg);color:var(--purple)}
+
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse}
+.data-table th{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+.data-table td{padding:10px 12px;font-size:13px;color:var(--text);border-bottom:1px solid var(--border)}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:rgba(255,255,255,0.02)}
+
+/* PROGRESS */
+.prog-wrap{background:var(--bg4);border-radius:4px;height:5px;overflow:hidden}
+.prog-fill{height:100%;border-radius:4px;transition:width 0.4s ease}
+
+/* SECTION HEAD */
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.section-head h2{font-size:14px;font-weight:500;color:var(--text)}
+.action-btn{font-size:12px;color:var(--text3);background:none;border:none;cursor:pointer;font-family:var(--font);padding:4px 8px;border-radius:6px;transition:all 0.15s}
+.action-btn:hover{color:var(--accent);background:rgba(200,240,96,0.08)}
+
+/* CHART */
+.chart-wrap{position:relative}
+
+/* DIVIDER */
+.divider{border:none;border-top:1px solid var(--border);margin:20px 0}
+
+/* INPUTS */
+.db-input{background:var(--bg3);border:1px solid var(--border2);color:var(--text);font-family:var(--font);font-size:13px;padding:7px 10px;border-radius:8px;width:100%;transition:border-color 0.15s;outline:none}
+.db-input:focus{border-color:var(--accent)}
+.db-input::placeholder{color:var(--text3)}
+.db-btn{background:var(--accent);color:#0e0f11;border:none;font-family:var(--font);font-size:12px;font-weight:500;padding:7px 14px;border-radius:8px;cursor:pointer;white-space:nowrap;transition:background 0.15s}
+.db-btn:hover{background:var(--accent2)}
+.db-btn.outline{background:none;border:1px solid var(--border2);color:var(--text2)}
+.db-btn.outline:hover{border-color:var(--accent);color:var(--accent);background:rgba(200,240,96,0.05)}
+.db-btn.danger{background:none;border:1px solid var(--border2);color:var(--red)}
+.db-btn.danger:hover{border-color:var(--red);background:var(--red-bg)}
+.form-row{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group label{font-size:11px;color:var(--text3)}
+
+/* SHEETS NOTE */
+.sheets-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(91,156,246,0.08);border:1px dashed rgba(91,156,246,0.25);color:var(--blue);font-size:11px;padding:4px 10px;border-radius:6px}
+.sheets-pill svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.5}
+
+/* AVATAR */
+.avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;background:var(--blue-bg);color:var(--blue)}
+
+/* TASK ITEM */
+.task-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.task-item:last-child{border-bottom:none}
+.task-check{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border2);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+.task-check.done{background:var(--green);border-color:var(--green)}
+.task-text{flex:1}.task-text.done{text-decoration:line-through;color:var(--text3)}
+.task-priority{font-size:10px;padding:2px 6px;border-radius:10px}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:4px}
+
+/* ANIMATIONS */
+.page.active .card{animation:fadeUp 0.25s ease both}
+.page.active .card:nth-child(2){animation-delay:0.04s}
+.page.active .card:nth-child(3){animation-delay:0.08s}
+.page.active .card:nth-child(4){animation-delay:0.12s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* PRIVATE SECTION */
+.private-blur{filter:blur(6px);pointer-events:none;user-select:none}
+.private-notice{text-align:center;font-size:12px;color:var(--text3);padding:16px;background:var(--bg3);border-radius:8px;border:1px solid var(--border)}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-logo-box">605</div>
+      <div>
+        <div class="login-logo-text">Creative Agency</div>
+        <div class="login-logo-sub">Boshqaruv paneli</div>
+      </div>
+    </div>
+    <div class="login-field">
+      <label>Foydalanuvchi nomi</label>
+      <input type="text" id="login-username" placeholder="username" autocomplete="username">
+    </div>
+    <div class="login-field">
+      <label>Parol</label>
+      <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="login-btn" onclick="doLogin()">Kirish</button>
+    <div class="login-error" id="login-error">Foydalanuvchi nomi yoki parol noto'g'ri</div>
+
+  </div>
+</div>
+
+<!-- APP -->
+<div class="layout" id="app" style="display:none">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">
+      <div class="logo-box">605</div>
+      <div>
+        <div class="logo-text">Creative Agency</div>
+        <div class="logo-sub">Boshqaruv paneli</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Asosiy</div>
+    <button class="nav-item active" id="nav-overview" onclick="goPage('overview',this)">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Umumiy ko'rinish
+    </button>
+    <button class="nav-item" id="nav-finance" onclick="goPage('finance',this)">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      Moliya
+    </button>
+    <button class="nav-item" id="nav-projects" onclick="goPage('projects',this)">
+      <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Loyihalar
+    </button>
+    <button class="nav-item" id="nav-sales" onclick="goPage('sales',this)">
+      <svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+      Sotuv
+    </button>
+    <button class="nav-item" id="nav-crm" onclick="goPage('crm',this)">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="16" y1="11" x2="22" y2="11"/></svg>
+      CRM — Leadlar
+    </button>
+    <button class="nav-item" id="nav-team" onclick="goPage('team',this)">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Jamoa & KPI
+    </button>
+    <button class="nav-item" id="nav-tasks" onclick="goPage('tasks',this)">
+      <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      Mening vazifalarim
+    </button>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="user-info">
+      <div class="user-avatar" id="sidebar-avatar"></div>
+      <div>
+        <div class="user-name" id="sidebar-name"></div>
+        <div class="user-role-badge" id="sidebar-role"></div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="doLogout()">
+      <svg style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Chiqish
+    </button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div>
+      <div class="page-title" id="page-title">Umumiy ko'rinish</div>
+      <div class="page-sub" id="page-sub">Bugungi holat — barcha bo'limlar</div>
+    </div>
+    <div class="topbar-right">
+      <button id="theme-toggle" onclick="toggleTheme()" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2);padding:6px 12px;border-radius:8px;font-size:14px;cursor:pointer;transition:all 0.15s" title="Mavzuni o'zgartirish">🌙</button>
+      <div class="date-chip" id="top-date"></div>
+      <button class="refresh-btn" onclick="loadFromSheets()">↻ Yangilash</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- OVERVIEW -->
+    <div class="page active" id="page-overview">
+      <div class="grid-4">
+        <div class="card"><div class="card-label">Oylik daromad</div><div class="metric-val accent" id="ov-revenue">—</div><div class="metric-sub">maqsad: <span id="ov-target">—</span> <span class="delta neutral" id="ov-rdelta">—</span></div></div>
+        <div class="card"><div class="card-label">Sof foyda</div><div class="metric-val green" id="ov-profit">—</div><div class="metric-sub">margin: <span id="ov-margin">—</span></div></div>
+        <div class="card"><div class="card-label">Aktiv loyihalar</div><div class="metric-val blue" id="ov-projects">0</div><div class="metric-sub"><span class="delta down" id="ov-late-badge">0 kechikkan</span></div></div>
+        <div class="card"><div class="card-label">Sales pipeline</div><div class="metric-val amber" id="ov-pipeline">—</div><div class="metric-sub"><span id="ov-deals">0</span> aktiv deal</div></div>
+      </div>
+      <div class="grid-4" style="margin-bottom:20px">
+        <div class="card"><div class="card-label">Jami leadlar</div><div class="metric-val blue" id="ov-crm-total">0</div><div class="metric-sub">CRM pipeline</div></div>
+        <div class="card"><div class="card-label">Aktiv leadlar</div><div class="metric-val amber" id="ov-crm-active">0</div><div class="metric-sub">jarayonda</div></div>
+        <div class="card"><div class="card-label">Win (oy)</div><div class="metric-val green" id="ov-crm-won">0</div><div class="metric-sub">yutilgan deal</div></div>
+        <div class="card"><div class="card-label">CRM conversion</div><div class="metric-val accent" id="ov-crm-conv">—</div><div class="metric-sub">win rate</div></div>
+      </div>
+      <!-- YIL MAQSADI -->
+      <div class="card" style="margin-bottom:20px">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+          <div style="display:flex;align-items:center;gap:10px"><span style="font-size:15px;font-weight:500">Yillik maqsad — <span id="ov-year">2026</span></span><button onclick="showAnnualModal()" style="background:rgba(200,240,96,0.1);border:1px solid rgba(200,240,96,0.3);color:var(--accent);font-size:11px;padding:3px 10px;border-radius:6px;cursor:pointer;font-family:var(--font)">✏ Maqsad</button></div>
+          <div style="display:flex;gap:24px;flex-wrap:wrap">
+            <div>
+              <div style="font-size:11px;color:var(--text3);margin-bottom:2px">Sotuv rejasi</div>
+              <div style="font-size:18px;font-weight:500;color:var(--text)"><span id="ov-sales-plan">—</span></div>
+            </div>
+            <div>
+              <div style="font-size:11px;color:var(--text3);margin-bottom:2px">Hozirgi natija</div>
+              <div style="font-size:18px;font-weight:500;color:var(--green)"><span id="ov-sales-fact">—</span></div>
+            </div>
+            <div>
+              <div style="font-size:11px;color:var(--text3);margin-bottom:2px">Daromad rejasi</div>
+              <div style="font-size:18px;font-weight:500;color:var(--text)"><span id="ov-revenue-plan">—</span></div>
+            </div>
+            <div>
+              <div style="font-size:11px;color:var(--text3);margin-bottom:2px">Hozirgi daromad</div>
+              <div style="font-size:18px;font-weight:500;color:var(--green)"><span id="ov-revenue-fact">—</span></div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+            <canvas id="chart-gauge" width="130" height="80" role="img" aria-label="Yillik maqsad foizi"></canvas>
+            <div id="gauge-pct" style="font-size:20px;font-weight:500;margin-top:-4px;color:var(--accent)">0%</div>
+            <div style="font-size:11px;color:var(--text3)">yillik maqsaddan</div>
+          </div>
+        </div>
+        <div style="margin-top:14px">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text3);margin-bottom:4px">
+            <span>Progress</span><span id="gauge-pct2">0%</span>
+          </div>
+          <div style="background:var(--bg4);border-radius:8px;height:10px;overflow:hidden">
+            <div id="annual-progress-bar" style="height:100%;border-radius:8px;background:linear-gradient(90deg,#4caf7d,#c8f060);width:0%;transition:width 0.6s ease"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-21">
+        <div class="card">
+          <div class="section-head"><h2>Oylik daromad dinamikasi</h2><span class="sheets-pill"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Sheets ulanganda avtomatik</span></div>
+          <div class="chart-wrap" style="height:200px"><canvas id="chart-revenue" role="img" aria-label="Oylik daromad grafigi">Daromad grafigi</canvas></div>
+        </div>
+        <div class="card">
+          <div class="section-head"><h2>Loyiha holati</h2></div>
+          <div class="chart-wrap" style="height:170px"><canvas id="chart-projects-donut" role="img" aria-label="Loyihalar holati">Loyihalar holati</canvas></div>
+          <div style="display:flex;gap:8px;justify-content:center;margin-top:8px;flex-wrap:wrap;font-size:12px">
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:2px;background:#4caf7d"></span>Vaqtida</span>
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:2px;background:#f5a623"></span>Xavf</span>
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:2px;background:#f05a5a"></span>Kechikkan</span>
+          </div>
+        </div>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title">Cashflow holati</div>
+          <div class="metric-val" id="ov-cashflow" style="font-size:22px">—</div>
+          <div style="margin-top:12px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text3);margin-bottom:4px"><span>Kirim</span><span id="ov-cf-in" style="color:var(--green)">—</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text3)"><span>Chiqim</span><span id="ov-cf-out" style="color:var(--red)">—</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">PM yuklamasi</div>
+          <div id="ov-pm-load"><div style="font-size:13px;color:var(--text3)">Loyiha qo'shilmagan</div></div>
+        </div>
+        <div class="card">
+          <div class="section-head"><h2>Bugungi vazifalar</h2><button class="action-btn" onclick="goPage('tasks', document.getElementById('nav-tasks'))">Barchasi →</button></div>
+          <div id="ov-today-tasks"><span style="font-size:13px;color:var(--text3)">Bugun vazifa yo'q</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FINANCE -->
+    <div class="page" id="page-finance">
+      <div class="grid-4">
+        <div class="card"><div class="card-label">Oylik daromad</div><div class="metric-val accent" id="f-revenue">—</div><div class="metric-sub">maqsad: <span id="f-target">—</span></div></div>
+        <div class="card"><div class="card-label">Xarajatlar</div><div class="metric-val amber" id="f-expenses">—</div><div class="metric-sub">shu oy</div></div>
+        <div class="card"><div class="card-label">Sof foyda</div><div class="metric-val" id="f-profit">—</div><div class="metric-sub">margin: <span id="f-margin">—</span></div></div>
+        <div class="card"><div class="card-label">Kechikkan to'lovlar</div><div class="metric-val red" id="f-overdue">—</div><div class="metric-sub"><span id="f-overdue-cnt">—</span> ta invoice</div></div>
+      </div>
+      <div class="grid-21">
+        <div class="card">
+          <div class="section-head"><h2>P&L — 6 oy</h2><span class="sheets-pill"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Sheets ulanganda</span></div>
+          <div class="chart-wrap" style="height:220px"><canvas id="chart-pl" role="img" aria-label="P&L grafigi">P&L grafigi</canvas></div>
+        </div>
+        <div class="card">
+          <div class="section-head"><h2>Cashflow</h2></div>
+          <div style="margin-bottom:14px"><div class="card-label">Joriy qoldiq</div><div class="metric-val green" id="f-cashflow" style="font-size:22px">—</div></div>
+          <div style="border-top:1px solid var(--border);padding-top:12px">
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text3)">Kirim (oylik)</span><span style="color:var(--green)" id="f-cf-in">—</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text3)">Chiqim (oylik)</span><span style="color:var(--red)" id="f-cf-out">—</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0"><span style="color:var(--text3)">Balans</span><span id="f-balance" style="font-weight:500">—</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:20px">
+        <div class="section-head"><h2>To'lanmagan invoicelar</h2><button class="action-btn" onclick="clearInvoices()">Tozalash</button></div>
+        <div id="invoice-list"><div style="font-size:13px;color:var(--text3);padding:8px 0">Hali invoice qo'shilmagan</div></div>
+        <hr class="divider" style="margin:14px 0">
+        <div class="form-row">
+          <div class="form-group"><label>Mijoz</label><input class="db-input" id="inv-client" placeholder="Mijoz nomi" style="width:150px"></div>
+          <div class="form-group"><label>Summa (so'm)</label><input class="db-input" id="inv-amount" type="number" placeholder="5000000" style="width:130px"></div>
+          <div class="form-group"><label>Kun kechikkan</label><input class="db-input" id="inv-days" type="number" placeholder="14" style="width:100px"></div>
+          <div style="align-self:flex-end"><button class="db-btn" onclick="addInvoice()">+ Invoice</button></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-head"><h2>Ko'rsatkichlarni kiritish</h2></div>
+        <div class="form-row" style="margin-bottom:10px">
+          <div class="form-group"><label>Daromad (so'm)</label><input class="db-input" id="inp-f-revenue" type="number" placeholder="12000000" style="width:150px"></div>
+          <div class="form-group"><label>Xarajat (so'm)</label><input class="db-input" id="inp-f-expenses" type="number" placeholder="8500000" style="width:150px"></div>
+          <div class="form-group"><label>Maqsad (so'm)</label><input class="db-input" id="inp-f-target" type="number" placeholder="15000000" style="width:150px"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Cashflow qoldiq</label><input class="db-input" id="inp-f-cashflow" type="number" placeholder="6000000" style="width:150px"></div>
+          <div class="form-group"><label>Kirim</label><input class="db-input" id="inp-f-cfin" type="number" placeholder="14000000" style="width:140px"></div>
+          <div class="form-group"><label>Chiqim</label><input class="db-input" id="inp-f-cfout" type="number" placeholder="8500000" style="width:140px"></div>
+          <div style="align-self:flex-end"><button class="db-btn" onclick="saveFinance()">Saqlash</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECTS -->
+    <div class="page" id="page-projects">
+      <div class="grid-4">
+        <div class="card"><div class="card-label">Jami aktiv</div><div class="metric-val blue" id="pr-total">0</div></div>
+        <div class="card"><div class="card-label">Vaqtida</div><div class="metric-val green" id="pr-ok">0</div></div>
+        <div class="card"><div class="card-label">Xavf ostida</div><div class="metric-val amber" id="pr-risk">0</div></div>
+        <div class="card"><div class="card-label">Kechikkan</div><div class="metric-val red" id="pr-late">0</div></div>
+      </div>
+      <div class="card" style="margin-bottom:20px">
+        <div class="section-head"><h2>Barcha loyihalar</h2><button class="action-btn" onclick="clearProjects()">Tozalash</button></div>
+        <table class="data-table"><thead><tr><th>Loyiha</th><th>Mijoz</th><th>PM</th><th>Deadline</th><th>Holat</th><th>Bajarilish</th><th></th></tr></thead>
+        <tbody id="projects-tbody"><tr><td colspan="7" style="color:var(--text3);text-align:center;padding:20px">Loyiha qo'shilmagan</td></tr></tbody></table>
+        <div id="project-add-form">
+        <hr class="divider" style="margin:14px 0">
+        <div class="form-row">
+          <div class="form-group"><label>Loyiha nomi</label><input class="db-input" id="pr-name" placeholder="Loyiha nomi" style="width:160px"></div>
+          <div class="form-group"><label>Mijoz</label><input class="db-input" id="pr-client" placeholder="Mijoz" style="width:120px"></div>
+          <div class="form-group"><label>PM</label><select class="db-input" id="pr-pm" style="width:110px"><option>Izzat</option><option>Guli</option><option>Nigora</option></select></div>
+          <div class="form-group"><label>Deadline</label><input class="db-input" id="pr-deadline" type="date" style="width:140px"></div>
+          <div class="form-group"><label>Holat</label><select class="db-input" id="pr-status" style="width:120px"><option value="ok">Vaqtida</option><option value="risk">Xavf ostida</option><option value="late">Kechikkan</option></select></div>
+          <div class="form-group"><label>% bajarildi</label><input class="db-input" id="pr-pct" type="number" min="0" max="100" placeholder="60" style="width:80px"></div>
+          <div style="align-self:flex-end"><button class="db-btn" onclick="addProject()">+ Qo'shish</button></div>
+        </div>
+        </div>
+      </div>
+      <div class="grid-3">
+        <div class="card"><div class="card-title">Izzat</div><div id="pm-izzat-list" style="font-size:13px;color:var(--text3)">Loyiha yo&#39;q</div></div>
+        <div class="card"><div class="card-title">Guli</div><div id="pm-guli-list" style="font-size:13px;color:var(--text3)">Loyiha yo&#39;q</div></div>
+        <div class="card"><div class="card-title">Nigora</div><div id="pm-nigora-list" style="font-size:13px;color:var(--text3)">Loyiha yo&#39;q</div></div>
+      </div>
+    </div>
+
+    <!-- SALES -->
+    <div class="page" id="page-sales">
+      <div class="grid-4">
+        <div class="card"><div class="card-label">Aktiv deallar</div><div class="metric-val blue" id="sl-deals">0</div></div>
+        <div class="card"><div class="card-label">Pipeline hajmi</div><div class="metric-val accent" id="sl-volume">—</div></div>
+        <div class="card"><div class="card-label">Yutilgan (oy)</div><div class="metric-val green" id="sl-won">0</div></div>
+        <div class="card"><div class="card-label">Conversion rate</div><div class="metric-val amber" id="sl-conv">—</div></div>
+      </div>
+      <div class="grid-21">
+        <div class="card">
+          <div class="section-head"><h2>Deal pipeline</h2><button class="action-btn" onclick="clearDeals()">Tozalash</button></div>
+          <table class="data-table"><thead><tr><th>Mijoz</th><th>Xizmat</th><th>Summa</th><th>Bosqich</th><th>Follow-up</th><th></th></tr></thead>
+          <tbody id="deals-tbody"><tr><td colspan="6" style="color:var(--text3);text-align:center;padding:20px">Deal qo'shilmagan</td></tr></tbody></table>
+          <hr class="divider" style="margin:14px 0">
+          <div class="form-row">
+            <div class="form-group"><label>Mijoz</label><input class="db-input" id="sl-client" placeholder="Mijoz" style="width:130px"></div>
+            <div class="form-group"><label>Xizmat</label><input class="db-input" id="sl-service" placeholder="SMM, Brand..." style="width:120px"></div>
+            <div class="form-group"><label>Summa</label><input class="db-input" id="sl-amount" type="number" placeholder="8000000" style="width:120px"></div>
+            <div class="form-group"><label>Bosqich</label><select class="db-input" id="sl-stage" style="width:130px"><option value="yangi">Yangi so'rov</option><option value="muzokaralar">Muzokaralar</option><option value="taklif">Taklif yuborildi</option><option value="yutildi">Yutildi</option><option value="yutqazildi">Yutqazildi</option></select></div>
+            <div class="form-group"><label>Follow-up</label><input class="db-input" id="sl-followup" type="date" style="width:140px"></div>
+            <div style="align-self:flex-end"><button class="db-btn" onclick="addDeal()">+ Deal</button></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-head"><h2>Bosqichlar bo'yicha</h2></div>
+          <div class="chart-wrap" style="height:220px"><canvas id="chart-funnel" role="img" aria-label="Sotuv hunisi">Sotuv hunisi</canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEAM -->
+    <div class="page" id="page-team">
+      <!-- DEPT TABS -->
+      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+        <button class="db-btn" id="dept-all" onclick="filterDept('all')">Barchasi</button>
+        <button class="db-btn outline" id="dept-PM" onclick="filterDept('PM')">PM</button>
+        <button class="db-btn outline" id="dept-Kreativ" onclick="filterDept('Kreativ')">Kreativ juftliklar</button>
+        <button class="db-btn outline" id="dept-Dizayner" onclick="filterDept('Dizayner')">Dizaynerlar</button>
+        <button class="db-btn outline" id="dept-SMM" onclick="filterDept('SMM')">SMM</button>
+        <button class="db-btn outline" id="dept-Sotuv" onclick="filterDept('Sotuv')">Sotuv</button>
+        <button class="db-btn outline" id="dept-Strategiya" onclick="filterDept('Strategiya')">Strategiya</button>
+      </div>
+      <div class="card" style="margin-bottom:20px">
+        <div class="section-head"><h2>Jamoa KPI — joriy oy</h2><button class="action-btn" onclick="clearKpis()">Tozalash</button></div>
+        <table class="data-table"><thead><tr><th>Xodim</th><th>Bo'lim</th><th>Lavozim</th><th>Fix (so'm)</th><th>KPI ball</th><th>Bonus</th><th>Jami</th><th></th></tr></thead>
+        <tbody id="kpi-tbody"><tr><td colspan="8" style="color:var(--text3);text-align:center;padding:20px">Xodim qo'shilmagan</td></tr></tbody></table>
+        <hr class="divider" style="margin:14px 0">
+        <div class="form-row">
+          <div class="form-group"><label>Ism</label><input class="db-input" id="kpi-name" placeholder="Ism" style="width:110px"></div>
+          <div class="form-group"><label>Bo'lim</label><select class="db-input" id="kpi-dept" style="width:130px"><option>PM</option><option>Kreativ</option><option>Dizayner</option><option>SMM</option><option>Sotuv</option><option>Strategiya</option></select></div>
+          <div class="form-group"><label>Lavozim</label><input class="db-input" id="kpi-role" placeholder="Lavozim" style="width:110px"></div>
+          <div class="form-group"><label>Fix maosh</label><input class="db-input" id="kpi-fix" type="number" placeholder="3000000" style="width:120px"></div>
+          <div class="form-group"><label>KPI ball (0-100)</label><input class="db-input" id="kpi-score" type="number" min="0" max="100" placeholder="78" style="width:100px"></div>
+          <div class="form-group"><label>Bonus %</label><input class="db-input" id="kpi-bonus-pct" type="number" placeholder="30" style="width:80px"></div>
+          <div style="align-self:flex-end"><button class="db-btn" onclick="addKpi()">+ Qo'shish</button></div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card"><div class="section-head"><h2>Bo'limlar bo'yicha o'rtacha KPI</h2></div><div class="chart-wrap" style="height:220px"><canvas id="chart-dept-kpi" role="img" aria-label="Bo'limlar KPI">Bo'limlar KPI</canvas></div></div>
+        <div class="card"><div class="section-head"><h2>Maosh taqsimoti</h2></div><div class="chart-wrap" style="height:220px"><canvas id="chart-salary" role="img" aria-label="Maosh taqsimoti">Maosh grafigi</canvas></div></div>
+      </div>
+    </div>
+
+
+    <!-- CRM PAGE -->
+    <div class="page" id="page-crm">
+      <div class="grid-4">
+        <div class="card"><div class="card-label">Jami leadlar</div><div class="metric-val blue" id="crm-total">0</div></div>
+        <div class="card"><div class="card-label">Aktiv</div><div class="metric-val amber" id="crm-active">0</div></div>
+        <div class="card"><div class="card-label">Win</div><div class="metric-val green" id="crm-won">0</div></div>
+        <div class="card"><div class="card-label">Conversion</div><div class="metric-val accent" id="crm-conv">—</div></div>
+      </div>
+      <div class="grid-21" style="margin-bottom:20px">
+        <div class="card">
+          <div class="section-head"><h2>Lead funnel</h2></div>
+          <div class="chart-wrap" style="height:220px"><canvas id="chart-crm-funnel" role="img" aria-label="Lead funnel">Lead funnel</canvas></div>
+        </div>
+        <div class="card">
+          <div class="section-head"><h2>Rad etish sabablari</h2></div>
+          <div class="chart-wrap" style="height:220px"><canvas id="chart-crm-lose" role="img" aria-label="Rad etish sabablari">Rad etish</canvas></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-head">
+          <h2>Barcha leadlar</h2>
+          <div style="display:flex;gap:8px;align-items:center">
+            <select class="db-input" id="crm-filter" onchange="renderCrmUI()" style="width:140px;font-size:12px">
+              <option value="">Barcha statuslar</option>
+              <option value="yangi">Yangi</option>
+              <option value="qongiroq">Qo'ng'iroq</option>
+              <option value="meet">Meet</option>
+              <option value="offer">Offer</option>
+              <option value="kutilmoqda">Kutilmoqda</option>
+              <option value="win">Win</option>
+              <option value="lose">Lose</option>
+            </select>
+            <button class="action-btn" onclick="clearLeads()">Tozalash</button>
+          </div>
+        </div>
+        <table class="data-table" id="crm-table">
+          <thead><tr><th>Lead</th><th>Kompaniya</th><th>Telefon</th><th>Manager</th><th>Status</th><th>Meet sanasi</th><th>Oxirgi izoh</th><th></th></tr></thead>
+          <tbody id="crm-tbody"><tr><td colspan="8" style="color:var(--text3);text-align:center;padding:20px">Lead qo'shilmagan</td></tr></tbody>
+        </table>
+        <hr class="divider" style="margin:14px 0">
+        <div class="form-row">
+          <div class="form-group"><label>Lead nomi</label><input class="db-input" id="crm-name" placeholder="Ism Familiya" style="width:140px"></div>
+          <div class="form-group"><label>Kompaniya</label><input class="db-input" id="crm-company" placeholder="Kompaniya" style="width:130px"></div>
+          <div class="form-group"><label>Telefon</label><input class="db-input" id="crm-phone" placeholder="+998..." style="width:130px"></div>
+          <div class="form-group">
+            <label>Status</label>
+            <select class="db-input" id="crm-status" style="width:130px">
+              <option value="yangi">Yangi</option>
+              <option value="qongiroq">Qo'ng'iroq</option>
+              <option value="meet">Meet</option>
+              <option value="offer">Offer</option>
+              <option value="kutilmoqda">Kutilmoqda</option>
+              <option value="win">Win ✅</option>
+              <option value="lose">Lose ❌</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Meet sanasi</label><input class="db-input" id="crm-meet-date" type="date" style="width:140px"></div>
+          <div style="align-self:flex-end"><button class="db-btn" onclick="addLead()">+ Lead</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEAD DETAIL MODAL -->
+    <div id="lead-modal" style="position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:2000">
+      <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:28px;width:520px;max-width:95vw;max-height:90vh;overflow-y:auto">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
+          <div>
+            <div id="lm-name" style="font-size:18px;font-weight:500;color:var(--text)"></div>
+            <div id="lm-company" style="font-size:13px;color:var(--text3);margin-top:2px"></div>
+          </div>
+          <button onclick="document.getElementById('lead-modal').style.display='none'" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:20px">✕</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+          <div style="background:var(--bg3);border-radius:8px;padding:10px">
+            <div style="font-size:11px;color:var(--text3);margin-bottom:4px">Telefon</div>
+            <div id="lm-phone" style="font-size:13px;font-weight:500"></div>
+          </div>
+          <div style="background:var(--bg3);border-radius:8px;padding:10px">
+            <div style="font-size:11px;color:var(--text3);margin-bottom:4px">Manager</div>
+            <div id="lm-manager" style="font-size:13px;font-weight:500"></div>
+          </div>
+          <div style="background:var(--bg3);border-radius:8px;padding:10px">
+            <div style="font-size:11px;color:var(--text3);margin-bottom:4px">Status</div>
+            <div id="lm-status"></div>
+          </div>
+          <div style="background:var(--bg3);border-radius:8px;padding:10px">
+            <div style="font-size:11px;color:var(--text3);margin-bottom:4px">Meet sanasi</div>
+            <div id="lm-meet" style="font-size:13px;font-weight:500"></div>
+          </div>
+        </div>
+        <div style="margin-bottom:16px">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.06em">Statusni o'zgartirish</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap" id="lm-status-btns"></div>
+        </div>
+        <div style="margin-bottom:12px">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em">Izohlar tarixi</div>
+          <div id="lm-notes" style="max-height:180px;overflow-y:auto;margin-bottom:10px"></div>
+          <div style="display:flex;gap:8px">
+            <input class="db-input" id="lm-note-input" placeholder="Izoh qo'shing..." style="flex:1" onkeydown="if(event.key==='Enter')addNote()">
+            <button class="db-btn" onclick="addNote()">Qo'shish</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;border-top:1px solid var(--border);padding-top:14px">
+          <button class="db-btn outline" onclick="document.getElementById('lead-modal').style.display='none'">Yopish</button>
+          <button class="db-btn danger" onclick="deleteLead()" style="background:none;border:1px solid var(--border2);color:var(--red);cursor:pointer;padding:7px 14px;border-radius:8px;font-family:var(--font);font-size:12px">O'chirish</button>
+        </div>
+      </div>
+    </div>
+    <!-- MY TASKS -->
+    <div class="page" id="page-tasks">
+      <div class="grid-3" style="margin-bottom:20px">
+        <div class="card"><div class="card-label">Jami vazifalar</div><div class="metric-val blue" id="t-total">0</div></div>
+        <div class="card"><div class="card-label">Bajarildi</div><div class="metric-val green" id="t-done">0</div></div>
+        <div class="card"><div class="card-label">Qoldi</div><div class="metric-val amber" id="t-remaining">0</div></div>
+      </div>
+      <div class="card">
+        <div class="section-head">
+          <h2 id="tasks-page-title">Mening vazifalarim</h2>
+          <button class="action-btn" onclick="clearMyTasks()">Bajarilganlarni tozalash</button>
+        </div>
+        <div id="tasks-list"><div style="font-size:13px;color:var(--text3);padding:8px 0">Hali vazifa yo&#39;q</div></div>
+        <hr class="divider" style="margin:14px 0">
+        <div class="form-row">
+          <div class="form-group" style="flex:1"><label>Vazifa matni</label><input class="db-input" id="task-text" placeholder="Vazifa kiriting..." onkeydown="if(event.key==='Enter')addTask()"></div>
+          <div class="form-group"><label>Muhimlik</label><select class="db-input" id="task-priority" style="width:120px"><option value="high">🔴 Yuqori</option><option value="medium" selected>🟡 O'rta</option><option value="low">🟢 Past</option></select></div>
+          <div class="form-group"><label>Sana</label><input class="db-input" id="task-date" type="date" style="width:140px"></div>
+          <div style="align-self:flex-end"><button class="db-btn" onclick="addTask()">+ Qo'shish</button></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+// ============ USERS ============
+const USERS = {
+  abduvohid: { pass: '605coo2024', name: 'Abduvohid', role: 'COO',     color: '#c8f060', initials: 'AB', access: ['overview','finance','projects','sales','crm','team','tasks'], pmFilter: null, salesFilter: null },
+  otabek:    { pass: '605ceo2024', name: 'Otabek',    role: 'CEO',     color: '#5b9cf6', initials: 'OT', access: ['overview','finance','projects','sales','crm','team','tasks'], pmFilter: null, salesFilter: null },
+  finansist: { pass: '605fin2024', name: 'Finansist', role: 'Moliya',  color: '#f5a623', initials: 'FN', access: ['finance','tasks'], pmFilter: null, salesFilter: null },
+  izzat:     { pass: '605pm1234',  name: 'Izzat',     role: 'PM',      color: '#a78bfa', initials: 'IZ', access: ['projects','tasks'], pmFilter: 'Izzat', salesFilter: null },
+  guli:      { pass: '605pm1234',  name: 'Guli',      role: 'PM',      color: '#a78bfa', initials: 'GU', access: ['projects','tasks'], pmFilter: 'Guli', salesFilter: null },
+  nigora:    { pass: '605pm1234',  name: 'Nigora',    role: 'PM',      color: '#a78bfa', initials: 'NI', access: ['projects','tasks'], pmFilter: 'Nigora', salesFilter: null },
+  mirabbos:  { pass: '605sales1',  name: 'Mirabbos',  role: 'Sales',   color: '#f472b6', initials: 'MI', access: ['sales','crm','tasks'], pmFilter: null, salesFilter: 'Mirabbos' },
+  dildora:   { pass: '605sales1',  name: 'Dildora',   role: 'Sales',   color: '#f472b6', initials: 'DI', access: ['sales','crm','tasks'], pmFilter: null, salesFilter: 'Dildora' },
+  nosir:     { pass: '605sales1',  name: 'Nosir',     role: 'Sales',   color: '#f472b6', initials: 'NO', access: ['sales','crm','tasks'], pmFilter: null, salesFilter: 'Nosir' }
+};
+
+let currentUser = null;
+
+function doLogin() {
+  const u = document.getElementById('login-username').value.trim().toLowerCase();
+  const p = document.getElementById('login-password').value;
+  const user = USERS[u];
+  if (user && user.pass === p) {
+    loginSuccess(u, user);
+  } else {
+    const err = document.getElementById('login-error');
+    err.style.display = 'block';
+    setTimeout(() => err.style.display = 'none', 3000);
+  }
+}
+
+
+
+function loginSuccess(key, user) {
+  currentUser = { key, ...user };
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  // sidebar user info
+  const av = document.getElementById('sidebar-avatar');
+  av.textContent = user.initials;
+  av.style.background = user.color + '22';
+  av.style.color = user.color;
+  document.getElementById('sidebar-name').textContent = user.name;
+  document.getElementById('sidebar-role').textContent = user.role;
+  // apply nav access
+  applyAccess();
+  setDate();
+  // PM bo'lsa loyiha qo'shish formasida o'z nomini tanlash
+  if (user.pmFilter) {
+    const prPm = document.getElementById('pr-pm');
+    if (prPm) prPm.value = user.pmFilter;
+  }
+  // Sheets dan ma'lumot yuklab, keyin sahifaga o'tish
+  loadFromSheets().then(() => {
+    const firstPage = user.access[0];
+    const navBtn = document.getElementById('nav-' + firstPage);
+    goPage(firstPage, navBtn);
+  });
+}
+
+function applyAccess() {
+  const allNavs = ['overview','finance','projects','sales','crm','team','tasks'];
+  allNavs.forEach(p => {
+    const btn = document.getElementById('nav-' + p);
+    if (btn) btn.style.display = currentUser.access.includes(p) ? '' : 'none';
+  });
+}
+
+function doLogout() {
+  currentUser = null;
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-password').value = '';
+}
+
+document.getElementById('login-password').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+
+// ============ DATA ============
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzHcYC6Dn0abnjJauP4jrHyEaPqUUIlAZAcNrZD6WUtEBkyAr5jQlUtObdstcZ7U2di/exec';
+
+let DB = {};
+if (!DB.finance) DB.finance = {};
+if (!DB.projects) DB.projects = [];
+if (!DB.deals) DB.deals = [];
+if (!DB.kpis) DB.kpis = [];
+if (!DB.invoices) DB.invoices = [];
+if (!DB.tasks) DB.tasks = {};
+if (!DB.leads) DB.leads = [];
+if (!DB.plans) DB.plans = {};
+if (!DB.annual) DB.annual = {salesPlan:0,salesFact:0,revenuePlan:0,revenueFact:0};
+
+// Sheets dan ma'lumot o'qish
+async function sheetRead(sheetName) {
+  try {
+    const res = await fetch(`${SHEETS_URL}?action=read&sheet=${sheetName}`);
+    const json = await res.json();
+    return json.data || [];
+  } catch(e) { return []; }
+}
+
+// Sheets ga barcha qatorlarni yozish
+async function sheetReplace(sheetName, rows) {
+  try {
+    const params = new URLSearchParams({ action: 'replace', sheet: sheetName, rows: JSON.stringify(rows) });
+    await fetch(`${SHEETS_URL}?${params}`);
+  } catch(e) {}
+}
+
+// Barcha ma'lumotlarni Sheets dan yuklash
+async function loadFromSheets() {
+  showLoader(true);
+  try {
+    const [finance, projects, deals, kpis, invoices, tasks] = await Promise.all([
+      sheetRead('Finance'), sheetRead('Projects'), sheetRead('Sales'),
+      sheetRead('KPI'), sheetRead('Invoices'), sheetRead('Tasks')
+    ]);
+
+    DB.finance = finance.length ? {
+      revenue: Number(finance[0].Daromad)||0, expenses: Number(finance[0].Xarajat)||0,
+      target: Number(finance[0].Maqsad)||0, cashflow: Number(finance[0].Cashflow)||0,
+      cfin: Number(finance[0].CF_Kirim)||0, cfout: Number(finance[0].CF_Chiqim)||0
+    } : {};
+
+    DB.projects = projects.map(r => ({
+      name: r.Nom, client: r.Mijoz, pm: r.PM,
+      deadline: (r.Deadline||'').split('T')[0], status: r.Holat, pct: Number(r.Foiz)||0
+    }));
+
+    DB.deals = deals.map(r => ({
+      client: r.Mijoz, service: r.Xizmat, amount: Number(r.Summa)||0,
+      stage: r.Bosqich, followup: r.Followup
+    }));
+
+    DB.kpis = kpis.map(r => {
+      const fix = Number(r.Fix)||0, score = Number(r.Ball)||0, bonusPct = Number(r.BonusPct)||0;
+      return { name: r.Ism, dept: r.Bolim, role: r.Lavozim, fix, score, bonusPct, bonus: Math.round(fix*bonusPct/100*score/100) };
+    });
+
+    DB.invoices = invoices.map(r => ({ client: r.Mijoz, amount: Number(r.Summa)||0, days: Number(r.Kun)||0 }));
+
+    DB.tasks = {};
+    // Annual va plans localStorage dan
+    try { DB.annual = JSON.parse(localStorage.getItem('db605-annual') || '{}'); } catch(e) { DB.annual = {}; }
+    try { DB.plans = JSON.parse(localStorage.getItem('db605-plans') || '{}'); } catch(e) { DB.plans = {}; }
+    // Leads localStorage dan
+    try { DB.leads = JSON.parse(localStorage.getItem('db605-leads') || '[]'); } catch(e) { DB.leads = []; }
+    tasks.forEach(r => {
+      if (!DB.tasks[r.User]) DB.tasks[r.User] = [];
+      DB.tasks[r.User].push({ text: r.Matn, priority: r.Muhimlik, date: r.Sana, done: r.Bajarildi==='true', id: Date.now()+Math.random() });
+    });
+
+  } catch(e) {}
+  showLoader(false);
+  renderAll();
+}
+
+// Sheets ga saqlash
+async function save() {
+  // Finance
+  await sheetReplace('Finance', [[
+    new Date().toISOString().slice(0,7),
+    DB.finance.revenue||0, DB.finance.expenses||0, DB.finance.target||0,
+    DB.finance.cashflow||0, DB.finance.cfin||0, DB.finance.cfout||0
+  ]]);
+  // Projects
+  await sheetReplace('Projects', DB.projects.map(p => [p.name, p.client, p.pm, p.deadline, p.status, p.pct]));
+  // Sales
+  await sheetReplace('Sales', DB.deals.map(d => [d.client, d.service, d.amount, d.stage, d.followup]));
+  // KPI
+  await sheetReplace('KPI', DB.kpis.map(k => [k.name, k.dept, k.role, k.fix, k.score, k.bonusPct]));
+  // Invoices
+  await sheetReplace('Invoices', DB.invoices.map(i => [i.client, i.amount, i.days]));
+  // Annual maqsad
+  try { localStorage.setItem('db605-annual', JSON.stringify(DB.annual)); } catch(e) {}
+  // Plans
+  try { localStorage.setItem('db605-plans', JSON.stringify(DB.plans)); } catch(e) {}
+  // Leads - localStorage da saqlanadi (Sheets keyinroq)
+  try { localStorage.setItem('db605-leads', JSON.stringify(DB.leads)); } catch(e) {}
+  // Tasks
+  const allTasks = [];
+  Object.entries(DB.tasks).forEach(([user, tasks]) => {
+    tasks.forEach(t => allTasks.push([user, t.text, t.priority, t.date, t.done]));
+  });
+  await sheetReplace('Tasks', allTasks);
+}
+
+function showLoader(show) {
+  let el = document.getElementById('global-loader');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'global-loader';
+    el.style.cssText = 'position:fixed;top:16px;right:80px;background:#1e2023;border:1px solid rgba(200,240,96,0.3);color:#c8f060;font-size:12px;padding:6px 14px;border-radius:8px;z-index:9999;display:none;';
+    el.textContent = '⟳ Yangilanmoqda...';
+    document.body.appendChild(el);
+  }
+  el.style.display = show ? 'block' : 'none';
+}
+
+const fmt = n => {
+  if (!n && n !== 0) return '—';
+  const abs = Math.abs(n), sign = n < 0 ? '-' : '';
+  if (abs >= 1000000000) return sign + (abs/1e9).toFixed(1) + 'B';
+  if (abs >= 1000000) return sign + (abs/1e6).toFixed(1) + 'M';
+  if (abs >= 1000) return sign + Math.round(abs/1000) + 'K';
+  return sign + String(Math.round(abs));
+};
+
+// ============ NAVIGATION ============
+const pageMeta = {
+  overview: ['Umumiy ko\'rinish', 'Bugungi holat — barcha bo\'limlar'],
+  finance:  ['Moliya', 'Cashflow, P&L va invoicelar'],
+  projects: ['Loyihalar', 'Barcha aktiv loyihalar va PM yuklamasi'],
+  sales:    ['Sotuv', 'Pipeline, deallar va conversion'],
+  team:     ['Jamoa & KPI', 'Xodimlar natijalari va maosh'],
+  tasks:    ['Mening vazifalarim', 'Shaxsiy vazifalar ro\'yxati'],
+  crm:      ['CRM — Leadlar', 'Lead boshqaruvi va sotuv jarayoni']
+};
+
+function goPage(id, navBtn) {
+  if (currentUser && !currentUser.access.includes(id)) return;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (navBtn) navBtn.classList.add('active');
+  const t = pageMeta[id] || [id, ''];
+  document.getElementById('page-title').textContent = t[0];
+  document.getElementById('page-sub').textContent = t[1];
+  if (id === 'tasks') renderTasksPage();
+  if (id === 'crm') renderCrmUI();
+  setTimeout(() => renderPageCharts(id), 60);
+}
+
+// ============ FINANCE ============
+function saveFinance() {
+  DB.finance.revenue  = Number(document.getElementById('inp-f-revenue').value) || 0;
+  DB.finance.expenses = Number(document.getElementById('inp-f-expenses').value) || 0;
+  DB.finance.target   = Number(document.getElementById('inp-f-target').value) || 0;
+  DB.finance.cashflow = Number(document.getElementById('inp-f-cashflow').value) || 0;
+  DB.finance.cfin     = Number(document.getElementById('inp-f-cfin').value) || 0;
+  DB.finance.cfout    = Number(document.getElementById('inp-f-cfout').value) || 0;
+  save(); renderFinanceUI();
+}
+function set(id, v) { const el = document.getElementById(id); if(el) el.textContent = v; }
+
+function renderFinanceUI() {
+  const f = DB.finance;
+  const profit = (f.revenue||0) - (f.expenses||0);
+  const margin = f.revenue ? Math.round(profit/f.revenue*100) : 0;
+  const pct    = f.target  ? Math.round(f.revenue/f.target*100) : 0;
+
+  set('ov-revenue', f.revenue ? fmt(f.revenue)+' so\'m' : '—');
+  set('f-revenue',  f.revenue ? fmt(f.revenue)+' so\'m' : '—');
+  set('ov-target',  f.target  ? fmt(f.target)+' so\'m'  : '—');
+  set('f-target',   f.target  ? fmt(f.target)+' so\'m'  : '—');
+  set('ov-profit',  f.revenue ? fmt(profit)+' so\'m'    : '—');
+  set('f-profit',   f.revenue ? fmt(profit)+' so\'m'    : '—');
+  const profEl = document.getElementById('f-profit');
+  if (profEl) profEl.className = 'metric-val ' + (profit >= 0 ? 'green' : 'red');
+  set('ov-margin', f.revenue ? margin+'%' : '—');
+  set('f-margin',  f.revenue ? margin+'%' : '—');
+  set('f-expenses', f.expenses ? fmt(f.expenses)+' so\'m' : '—');
+  set('ov-cashflow', f.cashflow ? fmt(f.cashflow)+' so\'m' : '—');
+  set('f-cashflow',  f.cashflow ? fmt(f.cashflow)+' so\'m' : '—');
+  const cfEl = document.getElementById('f-cashflow');
+  if (cfEl) cfEl.className = 'metric-val ' + ((f.cashflow||0) >= 0 ? 'green' : 'red');
+  set('ov-cf-in',  f.cfin  ? '+'+fmt(f.cfin)+' so\'m'  : '—');
+  set('f-cf-in',   f.cfin  ? '+'+fmt(f.cfin)+' so\'m'  : '—');
+  set('ov-cf-out', f.cfout ? '-'+fmt(f.cfout)+' so\'m' : '—');
+  set('f-cf-out',  f.cfout ? '-'+fmt(f.cfout)+' so\'m' : '—');
+  set('f-balance', f.cfin && f.cfout ? fmt(f.cfin-f.cfout)+' so\'m' : '—');
+
+  const rdelta = document.getElementById('ov-rdelta');
+  if (rdelta) {
+    if (f.target && f.revenue) { rdelta.textContent = pct+'%'; rdelta.className = 'delta '+(pct>=100?'up':pct>=70?'neutral':'down'); }
+    else { rdelta.textContent = '—'; rdelta.className = 'delta neutral'; }
+  }
+  const total_ov = DB.invoices.reduce((a,x) => a+(x.amount||0), 0);
+  set('f-overdue',     total_ov ? fmt(total_ov)+' so\'m' : '—');
+  set('f-overdue-cnt', DB.invoices.length || '—');
+  renderInvoices();
+}
+
+function addInvoice() {
+  const client = document.getElementById('inv-client').value.trim();
+  if (!client) return;
+  DB.invoices.push({ client, amount: Number(document.getElementById('inv-amount').value)||0, days: Number(document.getElementById('inv-days').value)||0 });
+  document.getElementById('inv-client').value = '';
+  document.getElementById('inv-amount').value = '';
+  document.getElementById('inv-days').value = '';
+  save(); renderFinanceUI();
+}
+function clearInvoices() { DB.invoices = []; save(); renderFinanceUI(); }
+function removeInvoice(i) { DB.invoices.splice(i,1); save(); renderFinanceUI(); }
+function renderInvoices() {
+  const el = document.getElementById('invoice-list'); if (!el) return;
+  if (!DB.invoices.length) { el.innerHTML='<div style="font-size:13px;color:var(--text3);padding:8px 0">Hali invoice qo\'shilmagan</div>'; return; }
+  el.innerHTML = `<table class="data-table"><thead><tr><th>Mijoz</th><th>Summa</th><th>Kechikkan</th><th></th></tr></thead><tbody>`+
+    DB.invoices.map((inv,i)=>`<tr><td>${inv.client}</td><td style="color:var(--red)">${fmt(inv.amount)} so'm</td><td><span class="badge ${inv.days>30?'red':inv.days>14?'amber':'blue'}">${inv.days} kun</span></td><td><button onclick="removeInvoice(${i})" style="background:none;border:none;cursor:pointer;color:var(--text3)">✕</button></td></tr>`).join('')+
+    `</tbody></table>`;
+}
+
+// ============ PROJECTS ============
+const statusCfg = { ok:{label:'Vaqtida',cls:'green'}, risk:{label:'Xavf',cls:'amber'}, late:{label:'Kechikkan',cls:'red'} };
+
+function addProject() {
+  const name = document.getElementById('pr-name').value.trim(); if (!name) return;
+  DB.projects.push({ name, client:document.getElementById('pr-client').value.trim(), pm:document.getElementById('pr-pm').value, deadline:document.getElementById('pr-deadline').value, status:document.getElementById('pr-status').value, pct:Math.min(100,Math.max(0,Number(document.getElementById('pr-pct').value)||0)) });
+  document.getElementById('pr-name').value=''; document.getElementById('pr-client').value=''; document.getElementById('pr-pct').value='';
+  save(); renderProjectsUI();
+}
+function clearProjects() { DB.projects=[]; save(); renderProjectsUI(); }
+function removeProject(i) { DB.projects.splice(i,1); save(); renderProjectsUI(); }
+
+function editProject(i) {
+  const p = DB.projects[i];
+  if (!p) return;
+  // Modal yaratish
+  let modal = document.getElementById('edit-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'edit-modal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:2000';
+    document.body.appendChild(modal);
+  }
+  modal.innerHTML = `
+    <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:24px;width:420px;max-width:95vw">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <h3 style="font-size:15px;font-weight:500">${p.name}</h3>
+        <button onclick="document.getElementById('edit-modal').style.display='none'" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px">✕</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="form-group">
+          <label>Holat</label>
+          <select class="db-input" id="edit-status">
+            <option value="ok" ${p.status==='ok'?'selected':''}>Vaqtida</option>
+            <option value="risk" ${p.status==='risk'?'selected':''}>Xavf ostida</option>
+            <option value="late" ${p.status==='late'?'selected':''}>Kechikkan</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Deadline</label>
+          <input class="db-input" id="edit-deadline" type="date" value="${p.deadline||''}">
+        </div>
+        <div class="form-group">
+          <label>Bajarilish (%)</label>
+          <input class="db-input" id="edit-pct" type="number" min="0" max="100" value="${p.pct||0}">
+        </div>
+        <button class="db-btn" style="margin-top:4px" onclick="saveEditProject(${i})">Saqlash</button>
+      </div>
+    </div>`;
+  modal.style.display = 'flex';
+}
+
+function saveEditProject(i) {
+  const status = document.getElementById('edit-status').value;
+  const deadline = document.getElementById('edit-deadline').value;
+  const pctVal = document.getElementById('edit-pct').value;
+  if (status) DB.projects[i].status = status;
+  if (deadline) DB.projects[i].deadline = deadline;
+  if (pctVal !== '') DB.projects[i].pct = Math.min(100, Math.max(0, Number(pctVal)||0));
+  document.getElementById('edit-modal').style.display = 'none';
+  save(); renderProjectsUI();
+}
+
+function renderProjectsUI() {
+  const pmFilter = currentUser && currentUser.pmFilter;
+  const visibleProjects = pmFilter ? DB.projects.filter(p => p.pm === pmFilter) : DB.projects;
+
+  const ok=visibleProjects.filter(p=>p.status==='ok').length, risk=visibleProjects.filter(p=>p.status==='risk').length, late=visibleProjects.filter(p=>p.status==='late').length, total=visibleProjects.length;
+  set('pr-total',total); set('pr-ok',ok); set('pr-risk',risk); set('pr-late',late);
+  set('ov-projects',total);
+  const lb=document.getElementById('ov-late-badge'); if(lb){lb.textContent=late+' kechikkan';lb.className='delta '+(late>0?'down':'up');}
+
+  const tbody=document.getElementById('projects-tbody');
+  if(tbody){
+    if(!visibleProjects.length){tbody.innerHTML='<tr><td colspan="7" style="color:var(--text3);text-align:center;padding:20px">Loyiha qo\'shilmagan</td></tr>';}
+    else tbody.innerHTML=visibleProjects.map((p,i)=>{
+      const sc=statusCfg[p.status]||statusCfg.ok, color=p.status==='ok'?'#4caf7d':p.status==='risk'?'#f5a623':'#f05a5a';
+      const realIdx = DB.projects.indexOf(p);
+      return `<tr>
+        <td style="font-weight:500">${p.name}</td>
+        <td style="color:var(--text3)">${p.client||'—'}</td>
+        <td>${p.pm}</td>
+        <td style="font-size:12px;font-family:var(--mono)">${p.deadline||'—'}</td>
+        <td><span class="badge ${sc.cls}">${sc.label}</span></td>
+        <td style="width:100px">
+          <div style="display:flex;align-items:center;gap:6px">
+            <div class="prog-wrap" style="flex:1"><div class="prog-fill" style="width:${p.pct}%;background:${color}"></div></div>
+            <span style="font-size:12px;color:var(--text3);min-width:28px">${p.pct}%</span>
+          </div>
+        </td>
+        <td>
+          <button onclick="editProject(${realIdx})" style="background:rgba(200,240,96,0.1);border:1px solid rgba(200,240,96,0.3);cursor:pointer;color:#c8f060;font-size:12px;padding:4px 12px;border-radius:6px;font-family:var(--font)">✏ Edit</button>
+          ${pmFilter?'':'<button onclick="removeProject('+realIdx+')" style="background:none;border:none;cursor:pointer;color:var(--text3);margin-left:6px;font-size:14px">✕</button>'}
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  ['Izzat','Guli','Nigora'].forEach(pm=>{
+    const pmP=DB.projects.filter(p=>p.pm===pm), el=document.getElementById('pm-'+pm.toLowerCase()+'-list'); if(!el)return;
+    el.innerHTML=pmP.length ? pmP.map(p=>{const sc=statusCfg[p.status]||statusCfg.ok; return `<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:13px"><span>${p.name}</span><span class="badge ${sc.cls}" style="font-size:10px">${sc.label}</span></div>`;}).join('')+`<div style="font-size:12px;color:var(--text3);margin-top:8px">${pmP.length} ta loyiha</div>` : '<div style="font-size:13px;color:var(--text3)">Loyiha yo\'q</div>';
+  });
+
+  const pmLoad=document.getElementById('ov-pm-load');
+  if(pmLoad) pmLoad.innerHTML=['Izzat','Guli','Nigora'].map(pm=>{
+    const cnt=DB.projects.filter(p=>p.pm===pm).length, pct=Math.min(100,Math.round(cnt/8*100)), color=pct>80?'#f05a5a':pct>60?'#f5a623':'#4caf7d';
+    return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div class="avatar">${pm.slice(0,2).toUpperCase()}</div><div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>${pm}</span><span style="color:var(--text3)">${cnt}/8</span></div><div class="prog-wrap"><div class="prog-fill" style="width:${pct}%;background:${color}"></div></div></div></div>`;
+  }).join('');
+}
+
+// ============ SALES ============
+const stageCfg = { yangi:{label:'Yangi so\'rov',cls:'blue'}, muzokaralar:{label:'Muzokaralar',cls:'amber'}, taklif:{label:'Taklif yuborildi',cls:'blue'}, yutildi:{label:'Yutildi',cls:'green'}, yutqazildi:{label:'Yutqazildi',cls:'red'} };
+
+function addDeal() {
+  const client=document.getElementById('sl-client').value.trim(); if(!client)return;
+  const manager = currentUser && currentUser.salesFilter ? currentUser.salesFilter : (currentUser ? currentUser.name : '');
+  DB.deals.push({client,service:document.getElementById('sl-service').value.trim(),amount:Number(document.getElementById('sl-amount').value)||0,stage:document.getElementById('sl-stage').value,followup:document.getElementById('sl-followup').value,manager});
+  document.getElementById('sl-client').value=''; document.getElementById('sl-service').value=''; document.getElementById('sl-amount').value='';
+  save(); renderSalesUI();
+}
+function clearDeals(){DB.deals=[];save();renderSalesUI();}
+function removeDeal(i){DB.deals.splice(i,1);save();renderSalesUI();}
+
+function renderSalesUI(){
+  const active=DB.deals.filter(d=>d.stage!=='yutqazildi'), won=DB.deals.filter(d=>d.stage==='yutildi').length, closed=DB.deals.filter(d=>d.stage==='yutildi'||d.stage==='yutqazildi').length, vol=active.reduce((a,d)=>a+d.amount,0), conv=closed>0?Math.round(won/closed*100):0;
+  set('sl-deals',active.length); set('sl-volume',vol?fmt(vol)+' so\'m':'—'); set('sl-won',won); set('sl-conv',closed>0?conv+'%':'—');
+  set('ov-pipeline',vol?fmt(vol)+' so\'m':'—'); set('ov-deals',active.length);
+  const tbody=document.getElementById('deals-tbody');
+  if(tbody){
+    if(!DB.deals.length){tbody.innerHTML='<tr><td colspan="6" style="color:var(--text3);text-align:center;padding:20px">Deal qo\'shilmagan</td></tr>';}
+    else tbody.innerHTML=DB.deals.map((d,i)=>{const sc=stageCfg[d.stage]||stageCfg.yangi; return `<tr><td style="font-weight:500">${d.client}</td><td style="color:var(--text3)">${d.service||'—'}</td><td style="font-family:var(--mono);font-size:12px">${d.amount?fmt(d.amount)+' so\'m':'—'}</td><td><span class="badge ${sc.cls}">${sc.label}</span></td><td style="font-size:12px;color:var(--text3)">${d.followup||'—'}</td><td><button onclick="removeDeal(${i})" style="background:none;border:none;cursor:pointer;color:var(--text3)">✕</button></td></tr>`;}).join('');
+  }
+}
+
+// ============ TEAM / KPI ============
+let currentDeptFilter = 'all';
+function filterDept(dept) {
+  currentDeptFilter = dept;
+  document.querySelectorAll('[id^="dept-"]').forEach(b => { b.className = b.id === 'dept-'+dept ? 'db-btn' : 'db-btn outline'; });
+  renderTeamUI();
+}
+
+function addKpi(){
+  const name=document.getElementById('kpi-name').value.trim(); if(!name)return;
+  const fix=Number(document.getElementById('kpi-fix').value)||0, score=Math.min(100,Math.max(0,Number(document.getElementById('kpi-score').value)||0)), bonusPct=Number(document.getElementById('kpi-bonus-pct').value)||0, bonus=Math.round(fix*bonusPct/100*score/100);
+  DB.kpis.push({name,dept:document.getElementById('kpi-dept').value,role:document.getElementById('kpi-role').value,fix,score,bonusPct,bonus});
+  document.getElementById('kpi-name').value=''; document.getElementById('kpi-role').value=''; document.getElementById('kpi-fix').value=''; document.getElementById('kpi-score').value=''; document.getElementById('kpi-bonus-pct').value='';
+  save(); renderTeamUI();
+}
+function clearKpis(){DB.kpis=[];save();renderTeamUI();}
+function removeKpi(i){DB.kpis.splice(i,1);save();renderTeamUI();}
+
+function renderTeamUI(){
+  const filtered = currentDeptFilter==='all' ? DB.kpis : DB.kpis.filter(k=>k.dept===currentDeptFilter);
+  const tbody=document.getElementById('kpi-tbody');
+  if(tbody){
+    if(!filtered.length){tbody.innerHTML='<tr><td colspan="8" style="color:var(--text3);text-align:center;padding:20px">'+(currentDeptFilter==='all'?'Xodim qo\'shilmagan':'Bu bo\'limda xodim yo\'q')+'</td></tr>';}
+    else tbody.innerHTML=filtered.map((k,i)=>{
+      const color=k.score>=80?'#4caf7d':k.score>=60?'#f5a623':'#f05a5a';
+      const realIdx = DB.kpis.indexOf(k);
+      return `<tr><td style="font-weight:500">${k.name}</td><td><span class="badge ${k.dept==='Dizayner'?'purple':k.dept==='Kreativ'?'blue':k.dept==='PM'?'green':k.dept==='SMM'?'amber':'gray'}">${k.dept}</span></td><td style="color:var(--text3)">${k.role}</td><td style="font-family:var(--mono);font-size:12px">${fmt(k.fix)} so'm</td><td><div style="display:flex;align-items:center;gap:8px"><div class="prog-wrap" style="width:60px"><div class="prog-fill" style="width:${k.score}%;background:${color}"></div></div><span style="font-size:13px;color:${color};font-weight:500">${k.score}</span></div></td><td style="font-family:var(--mono);font-size:12px;color:var(--green)">+${fmt(k.bonus)} so'm</td><td style="font-family:var(--mono);font-size:12px;font-weight:500">${fmt(k.fix+k.bonus)} so'm</td><td><button onclick="removeKpi(${realIdx})" style="background:none;border:none;cursor:pointer;color:var(--text3)">✕</button></td></tr>`;
+    }).join('');
+  }
+}
+
+
+
+// ============ PLAN / FACT ============
+function savePlan() {
+  const manager = document.getElementById('plan-manager').value;
+  const amount = Number(document.getElementById('plan-amount').value) || 0;
+  if (!amount) return;
+  DB.plans[manager] = amount;
+  document.getElementById('plan-amount').value = '';
+  save();
+  renderSalesPlanFact();
+}
+
+function renderSalesPlanFact() {
+  const tbody = document.getElementById('sales-planfact-tbody');
+  if (!tbody) return;
+  const managers = ['Mirabbos', 'Dildora', 'Nosir'];
+  const monthLabel = document.getElementById('sales-month-label');
+  if (monthLabel) {
+    const now = new Date();
+    const months = ['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr'];
+    monthLabel.textContent = months[now.getMonth()] + ' ' + now.getFullYear();
+  }
+  
+  if (!managers.some(m => DB.plans[m])) {
+    tbody.innerHTML = '<tr><td colspan="7" style="color:var(--text3);text-align:center;padding:16px">Reja belgilanmagan</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = managers.map((manager, idx) => {
+    const plan = DB.plans[manager] || 0;
+    const wonDeals = DB.deals.filter(d => d.manager === manager && d.stage === 'yutildi');
+    const fact = wonDeals.reduce((a, d) => a + (d.amount || 0), 0);
+    const winCount = wonDeals.length;
+    const pct = plan > 0 ? Math.min(100, Math.round(fact / plan * 100)) : 0;
+    const qolgan = plan > 0 ? Math.max(0, plan - fact) : 0;
+    const color = pct >= 80 ? '#4caf7d' : pct >= 50 ? '#f5a623' : '#f05a5a';
+    
+    return `<tr>
+      <td style="color:var(--text3)">${idx+1}</td>
+      <td style="font-weight:500">${manager}</td>
+      <td style="font-family:var(--mono);font-size:12px">${plan ? fmt(plan)+" so'm" : '—'}</td>
+      <td style="min-width:140px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="flex:1;background:var(--bg4);border-radius:4px;height:8px;overflow:hidden">
+            <div style="width:${pct}%;height:100%;background:${color};border-radius:4px;transition:width 0.4s"></div>
+          </div>
+          <span style="font-size:12px;color:${color};min-width:35px;font-weight:500">${pct}%</span>
+        </div>
+      </td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--green)">${fact ? fmt(fact)+" so'm" : '—'}</td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--red)">${qolgan ? fmt(qolgan)+" so'm" : '—'}</td>
+      <td><span class="badge green">${winCount} ta</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// Gauge chart
+function renderGaugeChart() {
+  const canvas = document.getElementById('chart-gauge');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const annual = DB.annual || {};
+  const plan = annual.revenuePlan || 0;
+  const fact = annual.revenueFact || (DB.finance && DB.finance.revenue ? DB.finance.revenue * 12 : 0);
+  const pct = plan > 0 ? Math.min(100, Math.round(fact / plan * 100)) : 0;
+  
+  const w = canvas.width, h = canvas.height;
+  ctx.clearRect(0, 0, w, h);
+  
+  const cx = w / 2, cy = h - 10, r = Math.min(w, h * 2) / 2 - 8;
+  const startAngle = Math.PI;
+  const endAngle = 2 * Math.PI;
+  const currentAngle = startAngle + (endAngle - startAngle) * (pct / 100);
+  
+  // Background arc
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, startAngle, endAngle);
+  ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg4') || '#252729';
+  ctx.lineWidth = 12;
+  ctx.lineCap = 'round';
+  ctx.stroke();
+  
+  // Progress arc
+  if (pct > 0) {
+    const grad = ctx.createLinearGradient(cx - r, cy, cx + r, cy);
+    grad.addColorStop(0, '#4caf7d');
+    grad.addColorStop(1, '#c8f060');
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, startAngle, currentAngle);
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 12;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+  }
+  
+  // Foiz
+  const pctEl = document.getElementById('gauge-pct');
+  const pctEl2 = document.getElementById('gauge-pct2');
+  const bar = document.getElementById('annual-progress-bar');
+  if (pctEl) pctEl.textContent = pct + '%';
+  if (pctEl2) pctEl2.textContent = pct + '%';
+  if (bar) bar.style.width = pct + '%';
+  
+  // Annual labels
+  const annual2 = DB.annual || {};
+  set('ov-sales-plan', annual2.salesPlan ? fmt(annual2.salesPlan) + ' ta' : '—');
+  set('ov-sales-fact', annual2.salesFact ? fmt(annual2.salesFact) + ' ta' : '—');
+  set('ov-revenue-plan', annual2.revenuePlan ? fmt(annual2.revenuePlan) + " so'm" : '—');
+  set('ov-revenue-fact', annual2.revenueFact ? fmt(annual2.revenueFact) + " so'm" : '—');
+  set('ov-year', new Date().getFullYear());
+}
+
+// Annual maqsad kiritish modal
+function showAnnualModal() {
+  let modal = document.getElementById('annual-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'annual-modal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:2000';
+    modal.innerHTML = `<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:28px;width:400px">
+      <div style="font-size:15px;font-weight:500;margin-bottom:20px">Yillik maqsad belgilash</div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="form-group"><label>Sotuv rejasi (ta)</label><input class="db-input" id="ann-sales-plan" type="number" placeholder="500" value="${DB.annual.salesPlan||''}"></div>
+        <div class="form-group"><label>Sotuv natijasi (ta)</label><input class="db-input" id="ann-sales-fact" type="number" placeholder="120" value="${DB.annual.salesFact||''}"></div>
+        <div class="form-group"><label>Daromad rejasi (so'm)</label><input class="db-input" id="ann-rev-plan" type="number" placeholder="500000000" value="${DB.annual.revenuePlan||''}"></div>
+        <div class="form-group"><label>Daromad natijasi (so'm)</label><input class="db-input" id="ann-rev-fact" type="number" placeholder="0" value="${DB.annual.revenueFact||''}"></div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="db-btn" onclick="saveAnnual()" style="flex:1">Saqlash</button>
+          <button class="db-btn outline" onclick="document.getElementById('annual-modal').style.display='none'" style="flex:1">Bekor</button>
+        </div>
+      </div>
+    </div>`;
+    document.body.appendChild(modal);
+  }
+  modal.style.display = 'flex';
+}
+
+function saveAnnual() {
+  DB.annual = {
+    salesPlan: Number(document.getElementById('ann-sales-plan').value) || 0,
+    salesFact: Number(document.getElementById('ann-sales-fact').value) || 0,
+    revenuePlan: Number(document.getElementById('ann-rev-plan').value) || 0,
+    revenueFact: Number(document.getElementById('ann-rev-fact').value) || 0,
+  };
+  document.getElementById('annual-modal').style.display = 'none';
+  save();
+  renderGaugeChart();
+}
+
+// ============ CRM ============
+const crmStatusCfg = {
+  yangi:      { label: 'Yangi',       cls: 'blue',   emoji: '🆕' },
+  qongiroq:   { label: "Qo'ng'iroq", cls: 'blue',   emoji: '📞' },
+  meet:       { label: 'Meet',        cls: 'purple', emoji: '🤝' },
+  offer:      { label: 'Offer',       cls: 'amber',  emoji: '📋' },
+  kutilmoqda: { label: 'Kutilmoqda', cls: 'amber',  emoji: '⏳' },
+  win:        { label: 'Win ✅',      cls: 'green',  emoji: '🏆' },
+  lose:       { label: 'Lose ❌',     cls: 'red',    emoji: '❌' }
+};
+
+let currentLeadIdx = null;
+
+function addLead() {
+  const name = document.getElementById('crm-name').value.trim();
+  if (!name) return;
+  const manager = currentUser ? currentUser.name : '';
+  DB.leads.push({
+    name, 
+    company: document.getElementById('crm-company').value.trim(),
+    phone: document.getElementById('crm-phone').value.trim(),
+    status: document.getElementById('crm-status').value,
+    meetDate: document.getElementById('crm-meet-date').value,
+    manager,
+    notes: [],
+    createdAt: new Date().toISOString().split('T')[0]
+  });
+  document.getElementById('crm-name').value = '';
+  document.getElementById('crm-company').value = '';
+  document.getElementById('crm-phone').value = '';
+  document.getElementById('crm-meet-date').value = '';
+  save(); renderCrmUI();
+}
+
+function clearLeads() { if(confirm("Barcha leadlarni o'chirish?")){DB.leads=[];save();renderCrmUI();} }
+
+function deleteLead() {
+  if (currentLeadIdx === null) return;
+  if(confirm("Bu leadni o'chirish?")) {
+    DB.leads.splice(currentLeadIdx, 1);
+    document.getElementById('lead-modal').style.display = 'none';
+    save(); renderCrmUI();
+  }
+}
+
+function openLead(i) {
+  const lead = DB.leads[i];
+  if (!lead) return;
+  currentLeadIdx = i;
+  const sc = crmStatusCfg[lead.status] || crmStatusCfg.yangi;
+  
+  document.getElementById('lm-name').textContent = lead.name;
+  document.getElementById('lm-company').textContent = lead.company || '—';
+  document.getElementById('lm-phone').textContent = lead.phone || '—';
+  document.getElementById('lm-manager').textContent = lead.manager || '—';
+  document.getElementById('lm-meet').textContent = lead.meetDate || '—';
+  document.getElementById('lm-status').innerHTML = `<span class="badge ${sc.cls}">${sc.label}</span>`;
+  
+  // Status tugmalari
+  const btns = document.getElementById('lm-status-btns');
+  btns.innerHTML = Object.entries(crmStatusCfg).map(([key, cfg]) =>
+    `<button onclick="changeLeadStatus(${i},'${key}')" style="background:${lead.status===key?'rgba(200,240,96,0.15)':'var(--bg3)'};border:1px solid ${lead.status===key?'rgba(200,240,96,0.4)':'var(--border)'};color:${lead.status===key?'var(--accent)':'var(--text2)'};padding:5px 10px;border-radius:6px;font-size:12px;cursor:pointer;font-family:var(--font)">${cfg.emoji} ${cfg.label}</button>`
+  ).join('');
+  
+  // Izohlar
+  renderNotes(lead);
+  
+  document.getElementById('lead-modal').style.display = 'flex';
+}
+
+function changeLeadStatus(i, status) {
+  DB.leads[i].status = status;
+  save();
+  openLead(i); // refresh modal
+  renderCrmUI();
+}
+
+function addNote() {
+  if (currentLeadIdx === null) return;
+  const input = document.getElementById('lm-note-input');
+  const text = input.value.trim();
+  if (!text) return;
+  if (!DB.leads[currentLeadIdx].notes) DB.leads[currentLeadIdx].notes = [];
+  DB.leads[currentLeadIdx].notes.push({
+    text,
+    author: currentUser ? currentUser.name : "Noma'lum",
+    date: new Date().toLocaleDateString('uz-UZ')
+  });
+  input.value = '';
+  save();
+  renderNotes(DB.leads[currentLeadIdx]);
+  renderCrmUI();
+}
+
+function renderNotes(lead) {
+  const el = document.getElementById('lm-notes');
+  const notes = lead.notes || [];
+  if (!notes.length) {
+    el.innerHTML = '<div style="font-size:13px;color:var(--text3);padding:8px 0">Hali izoh yo&#39;q</div>';
+    return;
+  }
+  el.innerHTML = [...notes].reverse().map(n => `
+    <div style="background:var(--bg3);border-radius:8px;padding:10px 12px;margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span style="font-size:11px;font-weight:500;color:var(--accent)">${n.author}</span>
+        <span style="font-size:11px;color:var(--text3)">${n.date}</span>
+      </div>
+      <div style="font-size:13px;color:var(--text)">${n.text}</div>
+    </div>`).join('');
+}
+
+function renderCrmUI() {
+  const filterStatus = document.getElementById('crm-filter')?.value || '';
+  const filtered = filterStatus ? DB.leads.filter(l => l.status === filterStatus) : DB.leads;
+  
+  const total = DB.leads.length;
+  const active = DB.leads.filter(l => !['win','lose'].includes(l.status)).length;
+  const won = DB.leads.filter(l => l.status === 'win').length;
+  const closed = DB.leads.filter(l => ['win','lose'].includes(l.status)).length;
+  const conv = closed > 0 ? Math.round(won/closed*100) : 0;
+  
+  set('crm-total', total);
+  set('crm-active', active);
+  set('crm-won', won);
+  set('crm-conv', closed > 0 ? conv + '%' : '—');
+  
+  const tbody = document.getElementById('crm-tbody');
+  if (tbody) {
+    if (!filtered.length) {
+      tbody.innerHTML = '<tr><td colspan="8" style="color:var(--text3);text-align:center;padding:20px">Lead qo&#39;shilmagan</td></tr>';
+    } else {
+      tbody.innerHTML = filtered.map((lead) => {
+        const realIdx = DB.leads.indexOf(lead);
+        const sc = crmStatusCfg[lead.status] || crmStatusCfg.yangi;
+        const lastNote = lead.notes && lead.notes.length ? lead.notes[lead.notes.length-1].text : '—';
+        const shortNote = lastNote.length > 30 ? lastNote.slice(0,30)+'...' : lastNote;
+        return `<tr style="cursor:pointer" onclick="openLead(${realIdx})">
+          <td style="font-weight:500">${lead.name}</td>
+          <td style="color:var(--text3)">${lead.company||'—'}</td>
+          <td style="font-size:12px;color:var(--text3)">${lead.phone||'—'}</td>
+          <td style="font-size:12px">${lead.manager||'—'}</td>
+          <td><span class="badge ${sc.cls}">${sc.emoji} ${sc.label}</span></td>
+          <td style="font-size:12px;color:var(--text3)">${lead.meetDate||'—'}</td>
+          <td style="font-size:12px;color:var(--text3);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${shortNote}</td>
+          <td><button onclick="event.stopPropagation();openLead(${realIdx})" style="background:rgba(200,240,96,0.1);border:1px solid rgba(200,240,96,0.3);color:var(--accent);font-size:11px;padding:3px 8px;border-radius:6px;cursor:pointer;font-family:var(--font)">Ochish</button></td>
+        </tr>`;
+      }).join('');
+    }
+  }
+  
+  // Charts
+  setTimeout(() => {
+    renderCrmFunnelChart();
+    renderCrmLoseChart();
+  }, 50);
+}
+
+function renderCrmFunnelChart() {
+  const ctx = document.getElementById('chart-crm-funnel'); if(!ctx) return; destroyChart('crm-funnel');
+  const stages = ['yangi','qongiroq','meet','offer','kutilmoqda','win','lose'];
+  const labels = ['Yangi',"Qo'ng'iroq",'Meet','Offer','Kutilmoqda','Win','Lose'];
+  const data = stages.map(s => DB.leads.filter(l => l.status === s).length);
+  const colors = ['#5b9cf6','#5b9cf6','#a78bfa','#f5a623','#f5a623','#4caf7d','#f05a5a'];
+  charts['crm-funnel'] = new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets: [{ data, backgroundColor: colors, borderRadius: 4, borderSkipped: false }] },
+    options: { indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+      scales: { x:{ticks:{color:'#5a5a58',font:{size:11},stepSize:1},grid:{color:'rgba(255,255,255,0.05)'},border:{display:false}},
+                y:{ticks:{color:'#9a9a96',font:{size:11}},grid:{display:false},border:{display:false}} } }
+  });
+}
+
+function renderCrmLoseChart() {
+  const ctx = document.getElementById('chart-crm-lose'); if(!ctx) return; destroyChart('crm-lose');
+  const loseLeads = DB.leads.filter(l => l.status === 'lose' && l.notes && l.notes.length);
+  if (!loseLeads.length) {
+    destroyChart('crm-lose');
+    ctx.parentElement.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text3);font-size:13px">Hali Lose lead yo\'q</div>';
+    return;
+  }
+  // Managerlar bo'yicha lose soni
+  const managers = {};
+  DB.leads.filter(l=>l.status==='lose').forEach(l => {
+    const m = l.manager || "Noma'lum";
+    managers[m] = (managers[m]||0) + 1;
+  });
+  charts['crm-lose'] = new Chart(ctx, {
+    type: 'doughnut',
+    data: { labels: Object.keys(managers), datasets: [{ data: Object.values(managers), backgroundColor: ['#f05a5a','#f5a623','#a78bfa','#5b9cf6'], borderWidth: 0 }] },
+    options: { responsive:true, maintainAspectRatio:false, cutout:'60%', plugins:{legend:{display:true,position:'bottom',labels:{color:'#9a9a96',font:{size:11}}}} }
+  });
+}
+
+// ============ TASKS ============
+const priorityCfg = { high:{label:'Yuqori',cls:'red'}, medium:{label:'O\'rta',cls:'amber'}, low:{label:'Past',cls:'green'} };
+
+function myTasks() {
+  if (!currentUser) return [];
+  if (!DB.tasks[currentUser.key]) DB.tasks[currentUser.key] = [];
+  return DB.tasks[currentUser.key];
+}
+
+function addTask() {
+  const text = document.getElementById('task-text').value.trim(); if (!text) return;
+  myTasks().push({ text, priority: document.getElementById('task-priority').value, date: document.getElementById('task-date').value, done: false, id: Date.now() });
+  document.getElementById('task-text').value = '';
+  save(); renderTasksPage(); renderTodayTasks();
+}
+
+function toggleTask(id) {
+  const task = myTasks().find(t => t.id === id); if (task) task.done = !task.done;
+  save(); renderTasksPage(); renderTodayTasks();
+}
+
+function removeTask(id) {
+  if (!currentUser) return;
+  DB.tasks[currentUser.key] = myTasks().filter(t => t.id !== id);
+  save(); renderTasksPage(); renderTodayTasks();
+}
+
+function clearMyTasks() {
+  if (!currentUser) return;
+  DB.tasks[currentUser.key] = myTasks().filter(t => !t.done);
+  save(); renderTasksPage(); renderTodayTasks();
+}
+
+function renderTasksPage() {
+  const tasks = myTasks();
+  const done = tasks.filter(t=>t.done).length;
+  set('t-total', tasks.length); set('t-done', done); set('t-remaining', tasks.length-done);
+  const el = document.getElementById('tasks-list'); if (!el) return;
+  if (!tasks.length) { el.innerHTML='<div style="font-size:13px;color:var(--text3);padding:8px 0">Hali vazifa yo\'q. Qo\'shing!</div>'; return; }
+  const sorted = [...tasks].sort((a,b) => {
+    const order = {high:0,medium:1,low:2}; if(a.done !== b.done) return a.done?1:-1; return (order[a.priority]||1)-(order[b.priority]||1);
+  });
+  el.innerHTML = sorted.map(t => {
+    const pc = priorityCfg[t.priority]||priorityCfg.medium;
+    const today = new Date().toISOString().split('T')[0];
+    const isToday = t.date === today;
+    return `<div class="task-item">
+      <div class="task-check ${t.done?'done':''}" onclick="toggleTask(${t.id})" title="${t.done?'Bajarilmagan deb belgilash':'Bajarildi deb belgilash'}">
+        ${t.done?'<svg style="width:10px;height:10px;stroke:#0e0f11;fill:none;stroke-width:2.5;stroke-linecap:round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>':''}
+      </div>
+      <div class="task-text ${t.done?'done':''}" style="flex:1">${t.text}</div>
+      <span class="badge ${pc.cls}" style="font-size:10px;margin-right:6px">${pc.label}</span>
+      ${t.date?`<span style="font-size:11px;color:${isToday?'var(--amber)':'var(--text3)'};margin-right:8px">${isToday?'Bugun':t.date}</span>`:''}
+      <button onclick="removeTask(${t.id})" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:13px">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function updateOverviewCrm() {
+  const total = DB.leads ? DB.leads.length : 0;
+  const active = DB.leads ? DB.leads.filter(l => !['win','lose'].includes(l.status)).length : 0;
+  const won = DB.leads ? DB.leads.filter(l => l.status === 'win').length : 0;
+  const closed = DB.leads ? DB.leads.filter(l => ['win','lose'].includes(l.status)).length : 0;
+  const conv = closed > 0 ? Math.round(won/closed*100) : 0;
+  set('ov-crm-total', total);
+  set('ov-crm-active', active);
+  set('ov-crm-won', won);
+  set('ov-crm-conv', closed > 0 ? conv + '%' : '—');
+}
+
+function renderTodayTasks() {
+  const el = document.getElementById('ov-today-tasks'); if (!el) return;
+  const today = new Date().toISOString().split('T')[0];
+  const tasks = myTasks().filter(t => !t.done && t.date === today);
+  const followups = DB.deals.filter(d => d.followup === today);
+  const deadlines = DB.projects.filter(p => p.deadline === today);
+  if (!tasks.length && !followups.length && !deadlines.length) {
+    el.innerHTML='<span style="font-size:13px;color:var(--text3)">Bugun maxsus vazifa yo\'q</span>'; return;
+  }
+  el.innerHTML = [
+    ...deadlines.map(p=>`<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--border);font-size:12px"><span class="badge red" style="font-size:10px">Deadline</span><span>${p.name}</span></div>`),
+    ...followups.map(d=>`<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--border);font-size:12px"><span class="badge amber" style="font-size:10px">Follow-up</span><span>${d.client}</span></div>`),
+    ...tasks.map(t=>`<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--border);font-size:12px"><span class="badge blue" style="font-size:10px">Vazifa</span><span>${t.text}</span></div>`)
+  ].join('');
+}
+
+// ============ CHARTS ============
+const charts = {};
+function destroyChart(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
+
+function renderPageCharts(page) {
+  if(page==='overview'){renderRevenueChart();renderProjectsDonut();}
+  if(page==='finance'){renderPLChart();}
+  if(page==='sales'){renderFunnelChart(); renderSalesPlanFact();}
+  if(page==='crm'){renderCrmFunnelChart();renderCrmLoseChart();}
+  if(page==='team'){renderDeptKpiChart();renderSalaryChart();}
+}
+
+function renderRevenueChart(){
+  const ctx=document.getElementById('chart-revenue'); if(!ctx)return; destroyChart('revenue');
+  const months=['Yan','Fev','Mar','Apr','May','Iyn','Iyl','Avg','Sen','Okt','Noy','Dek'], now=new Date().getMonth();
+  const labels=months.slice(Math.max(0,now-5),now+1);
+  const rev=DB.finance.revenue||0, exp=DB.finance.expenses||0;
+  const revData=labels.map(()=>Math.round(rev*(0.7+Math.random()*0.6))); revData[revData.length-1]=rev;
+  const expData=labels.map(()=>Math.round(exp*(0.8+Math.random()*0.4))); expData[expData.length-1]=exp;
+  charts['revenue']=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'Daromad',data:revData,backgroundColor:'rgba(200,240,96,0.7)',borderRadius:4,borderSkipped:false},{label:'Xarajat',data:expData,backgroundColor:'rgba(240,90,90,0.4)',borderRadius:4,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5a5a58',font:{size:11}},grid:{display:false},border:{display:false}},y:{ticks:{color:'#5a5a58',font:{size:11},callback:v=>fmt(v)},grid:{color:'rgba(255,255,255,0.05)'},border:{display:false}}}}});
+}
+
+function renderProjectsDonut(){
+  const ctx=document.getElementById('chart-projects-donut'); if(!ctx)return; destroyChart('proj-donut');
+  const ok=DB.projects.filter(p=>p.status==='ok').length, risk=DB.projects.filter(p=>p.status==='risk').length, late=DB.projects.filter(p=>p.status==='late').length, total=ok+risk+late;
+  charts['proj-donut']=new Chart(ctx,{type:'doughnut',data:{labels:['Vaqtida','Xavf','Kechikkan'],datasets:[{data:total?[ok,risk,late]:[1,0,0],backgroundColor:['#4caf7d','#f5a623','#f05a5a'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.label+': '+ctx.raw}}},animation:{onComplete:function(){const chart=this;const ctx2=chart.ctx;ctx2.save();ctx2.font='bold 22px DM Sans, sans-serif';ctx2.fillStyle='#f0f0ee';ctx2.textAlign='center';ctx2.textBaseline='middle';const cx=chart.getDatasetMeta(0).data[0]?.x||chart.width/2;const cy=chart.getDatasetMeta(0).data[0]?.y||chart.height/2;ctx2.fillText(total,cx,cy-8);ctx2.font='12px DM Sans, sans-serif';ctx2.fillStyle='#9a9a96';ctx2.fillText('loyiha',cx,cy+12);ctx2.restore();}}}});
+}
+
+function renderPLChart(){
+  const ctx=document.getElementById('chart-pl'); if(!ctx)return; destroyChart('pl');
+  const months=['Yan','Fev','Mar','Apr','May','Iyn','Iyl','Avg','Sen','Okt','Noy','Dek'], now=new Date().getMonth();
+  const labels=months.slice(Math.max(0,now-5),now+1);
+  const rev=DB.finance.revenue||0, exp=DB.finance.expenses||0;
+  const revData=labels.map(()=>Math.round(rev*(0.75+Math.random()*0.5))); revData[revData.length-1]=rev;
+  const expData=labels.map(()=>Math.round(exp*(0.8+Math.random()*0.4))); expData[expData.length-1]=exp;
+  const profData=revData.map((r,i)=>r-expData[i]);
+  charts['pl']=new Chart(ctx,{type:'bar',data:{labels,datasets:[{type:'line',label:'Foyda',data:profData,borderColor:'#c8f060',backgroundColor:'rgba(200,240,96,0.08)',borderWidth:2,pointRadius:3,pointBackgroundColor:'#c8f060',tension:0.3,fill:true},{label:'Daromad',data:revData,backgroundColor:'rgba(91,156,246,0.5)',borderRadius:3,borderSkipped:false},{label:'Xarajat',data:expData,backgroundColor:'rgba(240,90,90,0.35)',borderRadius:3,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5a5a58',font:{size:11}},grid:{display:false},border:{display:false}},y:{ticks:{color:'#5a5a58',font:{size:11},callback:v=>fmt(v)},grid:{color:'rgba(255,255,255,0.05)'},border:{display:false}}}}});
+}
+
+function renderFunnelChart(){
+  const ctx=document.getElementById('chart-funnel'); if(!ctx)return; destroyChart('funnel');
+  const stages=['yangi','muzokaralar','taklif','yutildi','yutqazildi'], labels=['Yangi','Muzokaralar','Taklif','Yutildi','Yutqazildi'];
+  const data=stages.map(s=>DB.deals.filter(d=>d.stage===s).length);
+  charts['funnel']=new Chart(ctx,{type:'bar',data:{labels,datasets:[{data,backgroundColor:['#5b9cf6','#f5a623','#a78bfa','#4caf7d','#f05a5a'],borderRadius:4,borderSkipped:false}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5a5a58',font:{size:11},stepSize:1},grid:{color:'rgba(255,255,255,0.05)'},border:{display:false}},y:{ticks:{color:'#9a9a96',font:{size:12}},grid:{display:false},border:{display:false}}}}});
+}
+
+function renderDeptKpiChart(){
+  const ctx=document.getElementById('chart-dept-kpi'); if(!ctx)return; destroyChart('dept-kpi');
+  const depts=['PM','Kreativ','Dizayner','SMM','Sotuv','Strategiya'];
+  const data=depts.map(d=>{const g=DB.kpis.filter(k=>k.dept===d); return g.length?Math.round(g.reduce((a,k)=>a+k.score,0)/g.length):0;});
+  charts['dept-kpi']=new Chart(ctx,{type:'bar',data:{labels:depts,datasets:[{data,backgroundColor:data.map(v=>v>=80?'rgba(76,175,125,0.7)':v>=60?'rgba(245,166,35,0.7)':'rgba(240,90,90,0.5)'),borderRadius:4,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#9a9a96',font:{size:11}},grid:{display:false},border:{display:false}},y:{min:0,max:100,ticks:{color:'#5a5a58',font:{size:11}},grid:{color:'rgba(255,255,255,0.05)'},border:{display:false}}}}});
+}
+
+function renderSalaryChart(){
+  const ctx=document.getElementById('chart-salary'); if(!ctx)return; destroyChart('salary');
+  if(!DB.kpis.length)return;
+  charts['salary']=new Chart(ctx,{type:'bar',data:{labels:DB.kpis.map(k=>k.name),datasets:[{label:'Fix',data:DB.kpis.map(k=>k.fix),backgroundColor:'rgba(91,156,246,0.6)',borderRadius:3,borderSkipped:false},{label:'Bonus',data:DB.kpis.map(k=>k.bonus),backgroundColor:'rgba(200,240,96,0.7)',borderRadius:3,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{stacked:true,ticks:{color:'#9a9a96',font:{size:11}},grid:{display:false},border:{display:false}},y:{stacked:true,ticks:{color:'#5a5a58',font:{size:11},callback:v=>fmt(v)},grid:{color:'rgba(255,255,255,0.05)'},border:{display:false}}}}});
+}
+
+// ============ UTILS ============
+// ============ THEME ============
+function getSystemTheme() {
+  const hour = new Date().getHours();
+  return (hour >= 7 && hour < 19) ? 'light' : 'dark';
+}
+function applyTheme(theme) {
+  if (theme === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+    const btn = document.getElementById('theme-toggle');
+    if (btn) btn.textContent = '☀️';
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+    const btn = document.getElementById('theme-toggle');
+    if (btn) btn.textContent = '🌙';
+  }
+  localStorage.setItem('605-theme', theme);
+}
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  applyTheme(current === 'light' ? 'dark' : 'light');
+}
+function initTheme() {
+  const saved = localStorage.getItem('605-theme');
+  applyTheme(saved || getSystemTheme());
+  // Har soatda avtomatik tekshirish
+  setInterval(() => {
+    const saved = localStorage.getItem('605-theme-manual');
+    if (!saved) applyTheme(getSystemTheme());
+  }, 60 * 60 * 1000);
+}
+
+function setDate(){
+  const d=new Date(), days=['Yakshanba','Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba'], months=['yanvar','fevral','mart','aprel','may','iyun','iyul','avgust','sentabr','oktabr','noyabr','dekabr'];
+  set('top-date', days[d.getDay()]+', '+d.getDate()+' '+months[d.getMonth()]);
+}
+
+function renderAll(){
+  renderFinanceUI(); renderProjectsUI(); renderSalesUI(); renderTeamUI(); renderTodayTasks(); renderCrmUI(); updateOverviewCrm(); renderSalesPlanFact(); setTimeout(renderGaugeChart, 100);
+  const activePage = document.querySelector('.page.active');
+  if(activePage) setTimeout(()=>renderPageCharts(activePage.id.replace('page-','')), 60);
+}
+
+// Har doim login ekranidan boshlash
+window.addEventListener('DOMContentLoaded', function() {
+  initTheme();
+
+
+
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  currentUser = null;
+});
+</script>
+</body>
+</html>
