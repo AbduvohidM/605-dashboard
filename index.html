@@ -740,23 +740,7 @@ if (!DB.leads) DB.leads = [];
 if (!DB.plans) DB.plans = {};
 if (!DB.annual) DB.annual = {salesPlan:0,salesFact:0,revenuePlan:0,revenueFact:0};
 
-// Sheets dan ma'lumot o'qish
-async function sheetRead(sheetName) {
-  try {
-    const res = await fetch(`${SHEETS_URL}?action=read&sheet=${sheetName}`);
-    const json = await res.json();
-    return json.data || [];
-  } catch(e) { return []; }
-}
 
-// Maxsus action bilan o'qish
-async function sheetReadAction(action) {
-  try {
-    const res = await fetch(`${SHEETS_URL}?action=${action}`);
-    const json = await res.json();
-    return json.data || {};
-  } catch(e) { return {}; }
-}
 
 // Sheets ga barcha qatorlarni yozish
 async function sheetReplace(sheetName, rows) {
@@ -766,14 +750,54 @@ async function sheetReplace(sheetName, rows) {
   } catch(e) {}
 }
 
+// Google Sheets CSV orqali o'qish
+async function readSheetCSV(sheetName) {
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${SHEETS_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
+    const res = await fetch(url);
+    const text = await res.text();
+    const rows = parseCSV(text);
+    if (rows.length < 2) return [];
+    const headers = rows[0];
+    return rows.slice(1)
+      .filter(row => row.some(cell => cell !== ''))
+      .map(row => {
+        const obj = {};
+        headers.forEach((h, i) => obj[h] = row[i] || '');
+        return obj;
+      });
+  } catch(e) { console.error('Sheet read error:', sheetName, e); return []; }
+}
+
+function parseCSV(text) {
+  const rows = [];
+  let row = [], cell = '', inQuote = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '"') {
+      if (inQuote && text[i+1] === '"') { cell += '"'; i++; }
+      else inQuote = !inQuote;
+    } else if (ch === ',' && !inQuote) {
+      row.push(cell.trim()); cell = '';
+    } else if ((ch === '\n' || ch === '\r') && !inQuote) {
+      if (ch === '\r' && text[i+1] === '\n') i++;
+      row.push(cell.trim()); rows.push(row); row = []; cell = '';
+    } else { cell += ch; }
+  }
+  if (cell || row.length) { row.push(cell.trim()); if(row.some(c=>c)) rows.push(row); }
+  return rows;
+}
+
+const SHEETS_ID = '${SHEETS_ID}';
+
 // Barcha ma'lumotlarni Sheets dan yuklash
 async function loadFromSheets() {
   showLoader(true);
   try {
     const [finance, projects, deals, kpis, invoices, tasks, amoStats, amoLeads] = await Promise.all([
-      sheetRead('Finance'), sheetRead('Projects'), sheetRead('Sales'),
-      sheetRead('KPI'), sheetRead('Invoices'), sheetRead('Tasks'),
-      sheetReadAction('amo_stats'), sheetReadAction('amo_leads')
+      readSheetCSV('Finance'), readSheetCSV('Projects'), readSheetCSV('Sales'),
+      readSheetCSV('KPI'), readSheetCSV('Invoices'), readSheetCSV('Tasks'),
+      readSheetCSV('AMO_Stats'), readSheetCSV('AMO_Leads')
     ]);
 
     DB.finance = finance.length ? {
