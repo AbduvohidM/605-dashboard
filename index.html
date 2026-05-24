@@ -753,8 +753,9 @@ async function sheetReplace(sheetName, rows) {
 // Google Sheets CSV orqali o'qish
 async function readSheetCSV(sheetName) {
   try {
-    const url = `https://docs.google.com/spreadsheets/d/${SHEETS_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
+    const url = `https://docs.google.com/spreadsheets/d/${SHEETS_ID}/export?format=csv&sheet=${encodeURIComponent(sheetName)}`;
     const res = await fetch(url);
+    if (!res.ok) { console.error('Sheet error:', sheetName, res.status); return []; }
     const text = await res.text();
     const rows = parseCSV(text);
     if (rows.length < 2) return [];
