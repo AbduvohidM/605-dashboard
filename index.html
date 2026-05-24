@@ -292,10 +292,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
         <div class="card"><div class="card-label">Sales pipeline</div><div class="metric-val amber" id="ov-pipeline">—</div><div class="metric-sub"><span id="ov-deals">0</span> aktiv deal</div></div>
       </div>
       <div class="grid-4" style="margin-bottom:20px">
-        <div class="card"><div class="card-label">Jami leadlar</div><div class="metric-val blue" id="ov-crm-total">0</div><div class="metric-sub">CRM pipeline</div></div>
+        <div class="card"><div class="card-label">Jami leadlar <span style="font-size:10px;color:var(--blue)">AmoCRM</span></div><div class="metric-val blue" id="ov-crm-total">0</div><div class="metric-sub">CRM pipeline</div></div>
         <div class="card"><div class="card-label">Aktiv leadlar</div><div class="metric-val amber" id="ov-crm-active">0</div><div class="metric-sub">jarayonda</div></div>
-        <div class="card"><div class="card-label">Win (oy)</div><div class="metric-val green" id="ov-crm-won">0</div><div class="metric-sub">yutilgan deal</div></div>
-        <div class="card"><div class="card-label">CRM conversion</div><div class="metric-val accent" id="ov-crm-conv">—</div><div class="metric-sub">win rate</div></div>
+        <div class="card"><div class="card-label">Win</div><div class="metric-val green" id="ov-crm-won">0</div><div class="metric-sub">won summa: <span id="ov-crm-won-amount">—</span></div></div>
+        <div class="card"><div class="card-label">Conversion</div><div class="metric-val accent" id="ov-crm-conv">—</div><div class="metric-sub">win rate</div></div>
       </div>
       <!-- YIL MAQSADI -->
       <div class="card" style="margin-bottom:20px">
@@ -727,7 +727,7 @@ function doLogout() {
 document.getElementById('login-password').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
 
 // ============ DATA ============
-const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzHcYC6Dn0abnjJauP4jrHyEaPqUUIlAZAcNrZD6WUtEBkyAr5jQlUtObdstcZ7U2di/exec';
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwO4mKUJKENFG0PxHxudaqecXcyft8Sh__KIN5Ai7B_zo7dJzkm0nsjLAXG1pqSlhA/exec';
 
 let DB = {};
 if (!DB.finance) DB.finance = {};
@@ -749,6 +749,15 @@ async function sheetRead(sheetName) {
   } catch(e) { return []; }
 }
 
+// Maxsus action bilan o'qish
+async function sheetReadAction(action) {
+  try {
+    const res = await fetch(`${SHEETS_URL}?action=${action}`);
+    const json = await res.json();
+    return json.data || {};
+  } catch(e) { return {}; }
+}
+
 // Sheets ga barcha qatorlarni yozish
 async function sheetReplace(sheetName, rows) {
   try {
@@ -761,9 +770,10 @@ async function sheetReplace(sheetName, rows) {
 async function loadFromSheets() {
   showLoader(true);
   try {
-    const [finance, projects, deals, kpis, invoices, tasks] = await Promise.all([
+    const [finance, projects, deals, kpis, invoices, tasks, amoStats, amoLeads] = await Promise.all([
       sheetRead('Finance'), sheetRead('Projects'), sheetRead('Sales'),
-      sheetRead('KPI'), sheetRead('Invoices'), sheetRead('Tasks')
+      sheetRead('KPI'), sheetRead('Invoices'), sheetRead('Tasks'),
+      sheetReadAction('amo_stats'), sheetReadAction('amo_leads')
     ]);
 
     DB.finance = finance.length ? {
@@ -1517,15 +1527,25 @@ function renderTasksPage() {
 }
 
 function updateOverviewCrm() {
-  const total = DB.leads ? DB.leads.length : 0;
-  const active = DB.leads ? DB.leads.filter(l => !['win','lose'].includes(l.status)).length : 0;
-  const won = DB.leads ? DB.leads.filter(l => l.status === 'win').length : 0;
-  const closed = DB.leads ? DB.leads.filter(l => ['win','lose'].includes(l.status)).length : 0;
-  const conv = closed > 0 ? Math.round(won/closed*100) : 0;
-  set('ov-crm-total', total);
-  set('ov-crm-active', active);
-  set('ov-crm-won', won);
-  set('ov-crm-conv', closed > 0 ? conv + '%' : '—');
+  // AmoCRM real ma'lumotlar
+  if (DB.amoStats && DB.amoStats['Jami leadlar']) {
+    set('ov-crm-total', DB.amoStats['Jami leadlar'] || 0);
+    set('ov-crm-active', DB.amoStats['Aktiv leadlar'] || 0);
+    set('ov-crm-won', DB.amoStats['Won'] || 0);
+    set('ov-crm-conv', DB.amoStats['Conversion %'] ? DB.amoStats['Conversion %'] + '%' : '—');
+    set('ov-crm-won-amount', DB.amoStats['Won summa ($)'] ? '$' + fmt(DB.amoStats['Won summa ($)']) : '—');
+  } else {
+    // Fallback - local leads
+    const total = DB.leads ? DB.leads.length : 0;
+    const active = DB.leads ? DB.leads.filter(l => !['win','lose'].includes(l.status)).length : 0;
+    const won = DB.leads ? DB.leads.filter(l => l.status === 'win').length : 0;
+    const closed = DB.leads ? DB.leads.filter(l => ['win','lose'].includes(l.status)).length : 0;
+    const conv = closed > 0 ? Math.round(won/closed*100) : 0;
+    set('ov-crm-total', total);
+    set('ov-crm-active', active);
+    set('ov-crm-won', won);
+    set('ov-crm-conv', closed > 0 ? conv + '%' : '—');
+  }
 }
 
 function renderTodayTasks() {
