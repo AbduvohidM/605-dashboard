@@ -892,25 +892,14 @@ async function sheetReplace(sheetName, rows) {
 }
 
 // Google Sheets CSV orqali o'qish
-const SHEETS_PUB_KEY = '2PACX-1vTSzNh0rzTOyMxCuAvwWi-AjK7Gwo179mFm2eDtcBvajEZCmmIWbmeNi2XFk4OtYVPQAiFueiWWubq1';
-
+// Apps Script orqali sheet o'qish (JSON formatida)
 async function readSheetCSV(sheetName) {
   try {
-    // Published URL - sheet nomi bilan to'g'ridan ishlaydi
-    const url = `https://docs.google.com/spreadsheets/d/e/${SHEETS_PUB_KEY}/pub?output=csv&sheet=${encodeURIComponent(sheetName)}`;
+    const url = `${SHEETS_URL}?action=read&sheet=${encodeURIComponent(sheetName)}`;
     const res = await fetch(url);
     if (!res.ok) { console.error('Sheet error:', sheetName, res.status); return []; }
-    const text = await res.text();
-    const rows = parseCSV(text);
-    if (rows.length < 2) return [];
-    const headers = rows[0];
-    return rows.slice(1)
-      .filter(row => row.some(cell => cell !== ''))
-      .map(row => {
-        const obj = {};
-        headers.forEach((h, i) => obj[h] = row[i] || '');
-        return obj;
-      });
+    const json = await res.json();
+    return json.data || [];
   } catch(e) { console.error('Sheet read error:', sheetName, e); return []; }
 }
 
