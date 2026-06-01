@@ -277,6 +277,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
     <div class="topbar-right">
       <button id="theme-toggle" onclick="toggleTheme()" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2);padding:6px 12px;border-radius:8px;font-size:14px;cursor:pointer;transition:all 0.15s" title="Mavzuni o'zgartirish">🌙</button>
       <div class="date-chip" id="top-date"></div>
+      <button class="refresh-btn" id="amo-sync-btn" onclick="syncAmo()" title="AmoCRM dan leadlarni yuklash" style="border-color:rgba(91,156,246,0.4);color:var(--blue)">⟳ AmoCRM</button>
       <button class="refresh-btn" onclick="loadFromSheets()">↻ Yangilash</button>
     </div>
   </div>
@@ -518,6 +519,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 
     <!-- CRM PAGE -->
     <div class="page" id="page-crm">
+      <div id="amo-banner" style="background:var(--blue-bg);border:1px solid rgba(91,156,246,0.25);border-radius:var(--radius);padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <svg style="width:16px;height:16px;stroke:var(--blue);fill:none;stroke-width:1.5;stroke-linecap:round;flex-shrink:0" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span id="amo-banner-text" style="font-size:12px;color:var(--blue)">AmoCRM ulanmagan. <code style="background:rgba(91,156,246,0.1);padding:1px 6px;border-radius:4px;font-size:11px">AMO_CONFIG</code> da subdomain va token kiriting, so'ng pastdagi tugmani bosing.</span>
+        </div>
+        <button onclick="syncAmo()" style="background:var(--blue);color:#fff;border:none;font-family:var(--font);font-size:12px;font-weight:500;padding:6px 14px;border-radius:6px;cursor:pointer;white-space:nowrap">Sinxronlashtirish</button>
+      </div>
       <div class="grid-4">
         <div class="card"><div class="card-label">Jami leadlar</div><div class="metric-val blue" id="crm-total">0</div></div>
         <div class="card"><div class="card-label">Aktiv</div><div class="metric-val amber" id="crm-active">0</div></div>
@@ -729,6 +737,139 @@ document.getElementById('login-password').addEventListener('keydown', e => { if(
 // ============ DATA ============
 const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwO4mKUJKENFG0PxHxudaqecXcyft8Sh__KIN5Ai7B_zo7dJzkm0nsjLAXG1pqSlhA/exec';
 
+// ============ AMOCRM CONFIG ============
+// Quyidagi 2 qatorni to'ldiring:
+const AMO_CONFIG = {
+  subdomain: '',        // masalan: '605agency'  →  605agency.amocrm.ru
+  token: ''             // AmoCRM → Sozlamalar → Integratsiyalar → API → Long-term token
+};
+
+// AmoCRM CORS muammosi tufayli Google Apps Script orqali proxy qilamiz.
+// Apps Script kodini qo'shish uchun: https://script.google.com → yangi loyiha → quyidagi kodni qo'shing:
+/*
+  function doGet(e) {
+    if (e.parameter.action === 'amo') {
+      const subdomain = e.parameter.subdomain;
+      const token = e.parameter.token;
+      const path = e.parameter.path || '/api/v4/leads?limit=250&with=contacts';
+      const url = 'https://' + subdomain + '.amocrm.ru' + path;
+      const res = UrlFetchApp.fetch(url, {
+        headers: { 'Authorization': 'Bearer ' + token },
+        muteHttpExceptions: true
+      });
+      return ContentService.createTextOutput(res.getContentText()).setMimeType(ContentService.MimeType.JSON);
+    }
+    // ... mavjud kod
+  }
+*/
+
+async function loadAmoLeads() {
+  const { subdomain, token } = AMO_CONFIG;
+  if (!subdomain || !token) {
+    console.log('AmoCRM: subdomain yoki token kiritilmagan');
+    return null;
+  }
+  try {
+    showLoader(true);
+    // Leads
+    const leadsUrl = `${SHEETS_URL}?action=amo&subdomain=${encodeURIComponent(subdomain)}&token=${encodeURIComponent(token)}&path=${encodeURIComponent('/api/v4/leads?limit=250&with=contacts,pipeline')}`;
+    const leadsRes = await fetch(leadsUrl);
+    if (!leadsRes.ok) { console.error('AmoCRM leads error:', leadsRes.status); showLoader(false); return null; }
+    const leadsData = await leadsRes.json();
+    const rawLeads = leadsData?._embedded?.leads || [];
+
+    // Contacts (bitta so'rovda)
+    const contactsUrl = `${SHEETS_URL}?action=amo&subdomain=${encodeURIComponent(subdomain)}&token=${encodeURIComponent(token)}&path=${encodeURIComponent('/api/v4/contacts?limit=250')}`;
+    const contactsRes = await fetch(contactsUrl);
+    const contactsData = contactsRes.ok ? await contactsRes.json() : {};
+    const contactsMap = {};
+    (contactsData?._embedded?.contacts || []).forEach(c => { contactsMap[c.id] = c; });
+
+    // Amodan leadlarni DB.leads formatiga o'tkazish
+    const amoStatusMap = {
+      142: 'yangi',       // Yangi lead (default)
+      143: 'qongiroq',
+      // Qo'shimcha statuslar pipeline ga qarab — to'ldirasiz
+    };
+
+    const amoLeads = rawLeads.map(lead => {
+      const contactId = lead._embedded?.contacts?.[0]?.id;
+      const contact = contactsMap[contactId] || {};
+      const phone = contact.custom_fields_values?.find(f => f.field_code === 'PHONE')?.values?.[0]?.value || '';
+      const statusId = lead.status_id;
+      const status = amoStatusMap[statusId] || (lead.closed_at ? (lead.loss_reason_id ? 'lose' : 'win') : 'yangi');
+      return {
+        id: 'amo_' + lead.id,
+        name: lead.name || "Noma'lum",
+        company: contact.name || '',
+        phone,
+        status,
+        amount: lead.price || 0,
+        manager: lead.responsible_user_id ? String(lead.responsible_user_id) : '',
+        meetDate: '',
+        notes: lead.custom_fields_values ? [] : [],
+        createdAt: lead.created_at ? new Date(lead.created_at * 1000).toISOString().split('T')[0] : '',
+        amoId: lead.id,
+        fromAmo: true
+      };
+    });
+
+    // Statistika
+    const total = amoLeads.length;
+    const won = amoLeads.filter(l => l.status === 'win').length;
+    const lose = amoLeads.filter(l => l.status === 'lose').length;
+    const active = total - won - lose;
+    const closed = won + lose;
+    const conv = closed > 0 ? Math.round(won / closed * 100) : 0;
+    const wonAmount = amoLeads.filter(l => l.status === 'win').reduce((a, l) => a + l.amount, 0);
+
+    DB.amoStats = {
+      'Jami leadlar': total,
+      'Aktiv leadlar': active,
+      'Won': won,
+      'Conversion %': conv,
+      'Won summa ($)': wonAmount
+    };
+
+    // Eski amo leadlarni olib, yangilarini qo'shamiz
+    DB.leads = [
+      ...DB.leads.filter(l => !l.fromAmo),
+      ...amoLeads
+    ];
+
+    showLoader(false);
+    renderAll();
+    showAmoStatus('✓ AmoCRM ulandi — ' + total + ' lead yuklandi', true);
+    const banner = document.getElementById('amo-banner'); if(banner) banner.style.display='none';
+    return amoLeads;
+  } catch(e) {
+    console.error('AmoCRM xato:', e);
+    showLoader(false);
+    showAmoStatus('✗ AmoCRM xato: ' + e.message, false);
+    return null;
+  }
+}
+
+function showAmoStatus(msg, ok) {
+  let el = document.getElementById('amo-status');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'amo-status';
+    el.style.cssText = 'position:fixed;bottom:20px;right:20px;font-size:12px;padding:8px 16px;border-radius:8px;z-index:9999;font-family:var(--font);transition:opacity 0.3s';
+    document.body.appendChild(el);
+  }
+  el.style.background = ok ? 'rgba(76,175,125,0.15)' : 'rgba(240,90,90,0.15)';
+  el.style.border = ok ? '1px solid rgba(76,175,125,0.4)' : '1px solid rgba(240,90,90,0.4)';
+  el.style.color = ok ? '#4caf7d' : '#f05a5a';
+  el.textContent = msg;
+  el.style.opacity = '1';
+  setTimeout(() => { el.style.opacity = '0'; }, 4000);
+}
+
+function amoConfigured() {
+  return AMO_CONFIG.subdomain && AMO_CONFIG.token;
+}
+
 let DB = {};
 if (!DB.finance) DB.finance = {};
 if (!DB.projects) DB.projects = [];
@@ -789,7 +930,7 @@ function parseCSV(text) {
   return rows;
 }
 
-const SHEETS_ID = '${SHEETS_ID}';
+const SHEETS_ID = '1ymADFoCLcnWeHa4GlhphT1HrKfE3ekwcAKpvDVvZFI8';
 
 // Barcha ma'lumotlarni Sheets dan yuklash
 async function loadFromSheets() {
@@ -828,14 +969,59 @@ async function loadFromSheets() {
     // Annual va plans localStorage dan
     try { DB.annual = JSON.parse(localStorage.getItem('db605-annual') || '{}'); } catch(e) { DB.annual = {}; }
     try { DB.plans = JSON.parse(localStorage.getItem('db605-plans') || '{}'); } catch(e) { DB.plans = {}; }
-    // Leads localStorage dan
-    try { DB.leads = JSON.parse(localStorage.getItem('db605-leads') || '[]'); } catch(e) { DB.leads = []; }
+
+    // AMO_Stats parse — "Stat,Qiymat" formatida
+    DB.amoStats = {};
+    if (amoStats && amoStats.length) {
+      amoStats.forEach(r => {
+        if (r.Stat && r.Qiymat !== undefined) {
+          const val = isNaN(Number(r.Qiymat)) ? r.Qiymat : Number(r.Qiymat);
+          DB.amoStats[r.Stat] = val;
+        }
+      });
+    }
+
+    // AMO_Leads parse — Sheets dan yuklangan leadlar
+    const amoStatusMap = {
+      "To'lov amalga oshirildi": 'win',
+      'Closed - lost': 'lose',
+      'FOLLOW-UP': 'kutilmoqda',
+      'MUSUR LIDLAR': 'lose',
+      'UCHRASHUV': 'meet',
+      '2-UCHRASHUV': 'meet',
+      'Initial Contact': 'qongiroq',
+      'Telegramdan yozildi': 'yangi',
+      "KP Tayorlash": 'offer',
+      "QAYTA QO'NG'IROQ": 'qongiroq',
+      "BEKOR BO'LGAN LOYIHALAR": 'lose'
+    };
+    if (amoLeads && amoLeads.length) {
+      const parsedAmoLeads = amoLeads.map(r => ({
+        id: 'amo_' + (r.ID || Math.random()),
+        name: r.Nomi || "Noma'lum",
+        company: r.Pipeline || '',
+        phone: '',
+        status: amoStatusMap[r.Status] || 'yangi',
+        amount: Number(r.Summa) || 0,
+        manager: r["Mas'ul"] || '',
+        meetDate: '',
+        notes: [],
+        createdAt: r.Yaratilgan || '',
+        amoId: r.ID,
+        fromAmo: true
+      }));
+      // Faqat amo leadlarini almashtir
+      DB.leads = parsedAmoLeads;
+    } else {
+      try { DB.leads = JSON.parse(localStorage.getItem('db605-leads') || '[]'); } catch(e) { DB.leads = []; }
+    }
+
     tasks.forEach(r => {
       if (!DB.tasks[r.User]) DB.tasks[r.User] = [];
       DB.tasks[r.User].push({ text: r.Matn, priority: r.Muhimlik, date: r.Sana, done: r.Bajarildi==='true', id: Date.now()+Math.random() });
     });
 
-  } catch(e) {}
+  } catch(e) { console.error('loadFromSheets xato:', e); }
   showLoader(false);
   renderAll();
 }
@@ -1552,13 +1738,23 @@ function renderTasksPage() {
 }
 
 function updateOverviewCrm() {
-  // AmoCRM real ma'lumotlar
-  if (DB.amoStats && DB.amoStats['Jami leadlar']) {
+  // AmoCRM real ma'lumotlar — Sheets dan
+  if (DB.amoStats && DB.amoStats['Jami leadlar'] !== undefined) {
     set('ov-crm-total', DB.amoStats['Jami leadlar'] || 0);
     set('ov-crm-active', DB.amoStats['Aktiv leadlar'] || 0);
     set('ov-crm-won', DB.amoStats['Won'] || 0);
-    set('ov-crm-conv', DB.amoStats['Conversion %'] ? DB.amoStats['Conversion %'] + '%' : '—');
+    set('ov-crm-conv', DB.amoStats['Conversion %'] !== undefined ? DB.amoStats['Conversion %'] + '%' : '—');
     set('ov-crm-won-amount', DB.amoStats['Won summa ($)'] ? '$' + fmt(DB.amoStats['Won summa ($)']) : '—');
+    // Oxirgi sinxron vaqtini ko'rsatish
+    const banner = document.getElementById('amo-banner');
+    const bannerText = document.getElementById('amo-banner-text');
+    if (banner && bannerText) {
+      const sync = DB.amoStats['Oxirgi sinxron'] || '';
+      banner.style.background = 'var(--green-bg)';
+      banner.style.border = '1px solid rgba(76,175,125,0.3)';
+      bannerText.style.color = 'var(--green)';
+      bannerText.innerHTML = '✓ AmoCRM Sheets orqali ulangan' + (sync ? ' — sinxron: <strong>' + sync + '</strong>' : '');
+    }
   } else {
     // Fallback - local leads
     const total = DB.leads ? DB.leads.length : 0;
@@ -1683,6 +1879,13 @@ function initTheme() {
 function setDate(){
   const d=new Date(), days=['Yakshanba','Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba'], months=['yanvar','fevral','mart','aprel','may','iyun','iyul','avgust','sentabr','oktabr','noyabr','dekabr'];
   set('top-date', days[d.getDay()]+', '+d.getDate()+' '+months[d.getMonth()]);
+}
+
+function syncAmo() {
+  if (!amoConfigured()) { showAmoStatus("⚠ AMO_CONFIG da subdomain va token kiriting", false); return; }
+  const btn = document.getElementById("amo-sync-btn");
+  if (btn) { btn.textContent = "⟳ Yuklanmoqda..."; btn.disabled = true; }
+  loadAmoLeads().finally(() => { if (btn) { btn.textContent = "⟳ AmoCRM"; btn.disabled = false; } });
 }
 
 function renderAll(){
