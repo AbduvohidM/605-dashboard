@@ -735,7 +735,7 @@ function doLogout() {
 document.getElementById('login-password').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
 
 // ============ DATA ============
-const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwO4mKUJKENFG0PxHxudaqecXcyft8Sh__KIN5Ai7B_zo7dJzkm0nsjLAXG1pqSlhA/exec';
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzJMcr11-cY6yyPfx7r9oe5DRQKUExtrZEiDq2Svx4-vI68cX5_MmRGJKQAxCKnIuxY/exec';
 
 // ============ AMOCRM CONFIG ============
 // Quyidagi 2 qatorni to'ldiring:
@@ -896,10 +896,16 @@ async function sheetReplace(sheetName, rows) {
 async function readSheetCSV(sheetName) {
   try {
     const url = `${SHEETS_URL}?action=read&sheet=${encodeURIComponent(sheetName)}`;
-    const res = await fetch(url);
+    const res = await fetch(url, { redirect: 'follow' });
     if (!res.ok) { console.error('Sheet error:', sheetName, res.status); return []; }
-    const json = await res.json();
-    return json.data || [];
+    const text = await res.text();
+    try {
+      const json = JSON.parse(text);
+      return json.data || [];
+    } catch(e) {
+      console.error('JSON parse error for', sheetName, text.substring(0, 100));
+      return [];
+    }
   } catch(e) { console.error('Sheet read error:', sheetName, e); return []; }
 }
 
