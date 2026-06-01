@@ -892,9 +892,12 @@ async function sheetReplace(sheetName, rows) {
 }
 
 // Google Sheets CSV orqali o'qish
+const SHEETS_PUB_KEY = '2PACX-1vTSzNh0rzTOyMxCuAvwWi-AjK7Gwo179mFm2eDtcBvajEZCmmIWbmeNi2XFk4OtYVPQAiFueiWWubq1';
+
 async function readSheetCSV(sheetName) {
   try {
-    const url = `https://docs.google.com/spreadsheets/d/${SHEETS_ID}/export?format=csv&sheet=${encodeURIComponent(sheetName)}`;
+    // Published URL - sheet nomi bilan to'g'ridan ishlaydi
+    const url = `https://docs.google.com/spreadsheets/d/e/${SHEETS_PUB_KEY}/pub?output=csv&sheet=${encodeURIComponent(sheetName)}`;
     const res = await fetch(url);
     if (!res.ok) { console.error('Sheet error:', sheetName, res.status); return []; }
     const text = await res.text();
@@ -931,6 +934,24 @@ function parseCSV(text) {
 }
 
 const SHEETS_ID = '1ymADFoCLcnWeHa4GlhphT1HrKfE3ekwcAKpvDVvZFI8';
+
+// Har bir sheet ning GID si - Google Sheets URL dagi #gid= qismi
+// Sheets ochib, har tab ni bosganingizda URL da ko'rinadi
+const SHEET_GIDS = {
+  Finance:   '0',
+  AMO_Leads: '949712727',
+  Menejer:   '1234567',
+  AMO_Stats: '800583793',
+  Projects:  '1622392117',
+  Sales:     '1813109290',
+  KPI:       '615266660',
+  Invoices:  '456789012',
+  Tasks:     '123456789'
+};
+
+function getSheetGid(sheetName) {
+  return SHEET_GIDS[sheetName] || '0';
+}
 
 // Barcha ma'lumotlarni Sheets dan yuklash
 async function loadFromSheets() {
