@@ -1000,9 +1000,8 @@ async function loadFromSheets() {
         const status = statusMap[rawStatus] || (rawStatus === 'Ongoing' ? 'ok' : rawStatus === 'Paused' ? 'risk' : rawStatus === 'Cancelled' ? 'late' : 'ok');
         const pctRaw = r["Ish bajarilish % [Auto]"] || '0';
         const pct = parseInt(String(pctRaw).replace('%','')) || 0;
-        const amount = String(r["Kelishuv narxi
-$
-(QQS siz)"] || r["Kelishuv narxi $ (QQS siz)"] || '0').replace(/[$,\s]/g,'');
+        const amtKey = Object.keys(r).find(k=>k.includes('Kelishuv narxi')) || '';
+        const amount = String(r[amtKey] || '0').replace(/[$,\s]/g,'');
         const paid = String(r["To'lagan qismi [Auto]"] || '0').replace(/[%\s]/g,'');
         const pmName = (r.PM||'').trim();
         const pmShort = pmName.includes('Izzatbek') ? 'Izzat' : pmName.includes('Nigora') ? 'Nigora' : pmName.includes('Guli') ? 'Guli' : pmName;
@@ -1022,12 +1021,10 @@ $
           contractLink: r["Shartnoma linki"] || '',
           team: r.Jamoa || '',
           startDate: r["Loyiha boshlanish sanasi"] || '',
-          amountUZS: r["Shartnoma summasi UZS
-(QQS bilan)"] || r["Shartnoma summasi UZS (QQS bilan)"] || '',
+          amountUZS: (()=>{const k=Object.keys(r).find(k=>k.includes('Shartnoma summasi UZS'));return k?r[k]:'';})(),
           remaining: r["Qolgan qismi [Auto]"] || '',
           paidPct: r["To'lagan qismi [Auto]"] || '',
-          pay1: r["1-to'lov
-(ish boshlashdan avval)"] || r["1-to'lov (ish boshlashdan avval)"] || '',
+          pay1: (()=>{const k=Object.keys(r).find(k=>k.includes("1-to'lov"));return k?r[k]:'';})(),
           pay2: r["2-to'lov"] || '',
           pay3: r["3-to'lov"] || ''
         };
