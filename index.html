@@ -432,18 +432,24 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
       <div class="card" style="margin-bottom:20px">
         <div class="section-head">
           <h2>Barcha loyihalar</h2>
-          <span style="font-size:12px;color:var(--text3)">ProjectStatuses dan ✓</span>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="font-size:12px;color:var(--text3)">ProjectStatuses dan ✓</span>
+            <button class="action-btn" onclick="openProjectModal()" style="background:var(--accent);color:#0e0f11;border:none;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer">+ Loyiha qo'shish</button>
+          </div>
         </div>
         <style>
+          #projects-main-table { border-collapse: separate; border-spacing: 0; }
           #projects-main-table th:first-child,
           #projects-main-table td:first-child {
             position: sticky;
             left: 0;
-            background: var(--card);
             z-index: 2;
-            box-shadow: 2px 0 4px rgba(0,0,0,0.15);
+            background: var(--card) !important;
+            box-shadow: 3px 0 6px rgba(0,0,0,0.2);
+            white-space: nowrap;
           }
-          #projects-main-table th:first-child { z-index: 3; }
+          #projects-main-table th:first-child { z-index: 3; background: var(--card) !important; }
+          #projects-main-table tr:hover td:first-child { background: var(--hover, var(--card)) !important; }
         </style>
         <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;max-height:600px;overflow-y:auto">
         <table class="data-table" id="projects-main-table" style="min-width:1800px;font-size:12px;border-collapse:collapse"><thead style="position:sticky;top:0;z-index:4;background:var(--card)"><tr>
@@ -473,6 +479,56 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
         <div class="card"><div class="card-title">Izzat</div><div id="pm-izzat-list" style="font-size:13px;color:var(--text3)">Loyiha yo&#39;q</div></div>
         <div class="card"><div class="card-title">Guli</div><div id="pm-guli-list" style="font-size:13px;color:var(--text3)">Loyiha yo&#39;q</div></div>
         <div class="card"><div class="card-title">Nigora</div><div id="pm-nigora-list" style="font-size:13px;color:var(--text3)">Loyiha yo&#39;q</div></div>
+      </div>
+    </div>
+
+    <!-- PROJECT MODAL -->
+    <div id="project-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;align-items:center;justify-content:center">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;width:560px;max-width:95vw;max-height:90vh;overflow-y:auto">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+          <h3 style="font-size:16px;font-weight:600">Yangi loyiha qo'shish</h3>
+          <button onclick="closeProjectModal()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text3)">✕</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div><label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px">Loyiha nomi *</label><input class="db-input" id="pm-name" placeholder="Loyiha nomi" style="width:100%"></div>
+          <div><label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px">Xizmat *</label>
+            <select class="db-input" id="pm-service" style="width:100%">
+              <option>Creative IMC</option><option>Creative PR</option><option>Branding</option>
+              <option>Positioning</option><option>Convert</option><option>SMM</option>
+              <option>Execution</option><option>Other</option>
+            </select>
+          </div>
+          <div><label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px">Mijoz (yuridik nomi)</label><input class="db-input" id="pm-client" placeholder='""FIRMA"" MCHJ' style="width:100%"></div>
+          <div><label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px">PM *</label>
+            <select class="db-input" id="pm-pm" style="width:100%">
+              <option>Izzatbek</option><option>Nigora</option><option>Guli</option>
+            </select>
+          </div>
+          <div><label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px">Jamoa</label><input class="db-input" id="pm-team" placeholder="Bekzod, Shukurullo" style="width:100%"></div>
+          <div><label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px">Holat</label>
+            <select class="db-input" id="pm-status" style="width:100%">
+              <option>Ongoing</option><option>Launching</option><option>Waiting</option>
+              <option>Paused</option><option>Finished</option><option>Cancelled</option>
+            </select>
+          </div>
+          <div><label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px">Boshlanish sanasi</label><input class="db-input" id="pm-start" type="date" style="width:100%"></div>
+          <div><label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px">Deadline</label><input class="db-input" id="pm-deadline" type="date" style="width:100%"></div>
+          <div><label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px">Kelishuv narxi ($)</label><input class="db-input" id="pm-amount" type="number" placeholder="5000" style="width:100%"></div>
+          <div><label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px">Shartnoma qilingan firma</label><input class="db-input" id="pm-firm" placeholder='"605-AGENCY" MCHJ' style="width:100%"></div>
+          <div style="grid-column:1/-1"><label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px">Hozirgi status</label><input class="db-input" id="pm-curstatus" placeholder="Konsept tayyorlanmoqda" style="width:100%"></div>
+          <div style="grid-column:1/-1"><label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px">Mijoz kayfiyati</label>
+            <select class="db-input" id="pm-mood" style="width:100%">
+              <option>Neytral</option><option>Yaxshi</option><option>Xavotirli</option><option>Muammoli</option>
+            </select>
+          </div>
+          <div><label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px">1-to'lov</label><input class="db-input" id="pm-pay1" placeholder="5000000" style="width:100%"></div>
+          <div><label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px">1-to'lov izohi</label><input class="db-input" id="pm-pay1note" placeholder="Ish boshlashdan avval" style="width:100%"></div>
+          <div><label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px">Shartnoma linki</label><input class="db-input" id="pm-contract" placeholder="https://drive.google.com/..." style="width:100%"></div>
+        </div>
+        <div style="margin-top:20px;display:flex;gap:10px;justify-content:flex-end">
+          <button onclick="closeProjectModal()" style="padding:8px 20px;border:1px solid var(--border);border-radius:6px;background:none;color:var(--text2);cursor:pointer;font-family:var(--font)">Bekor</button>
+          <button onclick="saveNewProject()" id="pm-save-btn" style="padding:8px 20px;border:none;border-radius:6px;background:var(--accent);color:#0e0f11;font-weight:500;cursor:pointer;font-family:var(--font)">Saqlash</button>
+        </div>
       </div>
     </div>
 
@@ -1253,12 +1309,77 @@ function renderInvoices() {
 // ============ PROJECTS ============
 const statusCfg = { ok:{label:'Vaqtida',cls:'green'}, risk:{label:'Xavf',cls:'amber'}, late:{label:'Kechikkan',cls:'red'} };
 
-function addProject() {
-  const name = document.getElementById('pr-name').value.trim(); if (!name) return;
-  DB.projects.push({ name, client:document.getElementById('pr-client').value.trim(), pm:document.getElementById('pr-pm').value, deadline:document.getElementById('pr-deadline').value, status:document.getElementById('pr-status').value, pct:Math.min(100,Math.max(0,Number(document.getElementById('pr-pct').value)||0)) });
-  document.getElementById('pr-name').value=''; document.getElementById('pr-client').value=''; document.getElementById('pr-pct').value='';
-  save(); renderProjectsUI();
+function openProjectModal() {
+  const m = document.getElementById('project-modal');
+  m.style.display = 'flex';
+  // Sana default bugun
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('pm-start').value = today;
 }
+function closeProjectModal() {
+  document.getElementById('project-modal').style.display = 'none';
+}
+
+async function saveNewProject() {
+  const name = document.getElementById('pm-name').value.trim();
+  if (!name) { alert("Loyiha nomi majburiy!"); return; }
+  const pm = document.getElementById('pm-pm').value;
+  const service = document.getElementById('pm-service').value;
+  const client = document.getElementById('pm-client').value.trim();
+  const team = document.getElementById('pm-team').value.trim();
+  const status = document.getElementById('pm-status').value;
+  const start = document.getElementById('pm-start').value;
+  const deadline = document.getElementById('pm-deadline').value;
+  const amount = document.getElementById('pm-amount').value;
+  const firm = document.getElementById('pm-firm').value.trim();
+  const curStatus = document.getElementById('pm-curstatus').value.trim();
+  const mood = document.getElementById('pm-mood').value;
+  const pay1 = document.getElementById('pm-pay1').value.trim();
+  const pay1note = document.getElementById('pm-pay1note').value.trim();
+  const contract = document.getElementById('pm-contract').value.trim();
+
+  // ProjectStatuses format: PM, Barcha loyihalar, Mijozni yuridik nomi, Xizmat, Ish statusi, PM, Jamoa, Loyiha boshlanish sanasi, Loyiha tugash sana rejasi, ...
+  const row = [
+    pm, name, client, service, status, pm, team,
+    start, deadline, '', curStatus, mood,
+    contract, firm,
+    amount ? '$' + amount : '', '', '', '',
+    pay1, pay1note, '', '', '', '', '', '', '', ''
+  ];
+
+  const btn = document.getElementById('pm-save-btn');
+  btn.textContent = 'Saqlanmoqda...';
+  btn.disabled = true;
+
+  try {
+    const url = `${SHEETS_URL}?action=addRow&sheet=ProjectStatuses&row=${encodeURIComponent(JSON.stringify(row))}`;
+    const res = await fetch(url);
+    const json = await res.json();
+    if (json.success) {
+      // Local ga ham qo'shish
+      DB.projects.push({
+        name, client, pm: pm.includes('Izzatbek') ? 'Izzat' : pm,
+        service, rawStatus: status, deadline, startDate: start,
+        amount: parseFloat(amount) || 0, mood, currentStatus: curStatus,
+        team, contractLink: contract, pay1, paidPct: '', remaining: ''
+      });
+      closeProjectModal();
+      renderProjectsUI();
+      // Inputlarni tozalash
+      ['pm-name','pm-client','pm-team','pm-amount','pm-firm','pm-curstatus','pm-pay1','pm-pay1note','pm-contract','pm-start','pm-deadline'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+    } else {
+      alert('Xato: ' + (json.error || 'Xato'));
+    }
+  } catch(e) {
+    alert('Server xato: ' + e.message);
+  }
+  btn.textContent = 'Saqlash';
+  btn.disabled = false;
+}
+
+function addProject() { openProjectModal(); }
 function clearProjects() { DB.projects=[]; save(); renderProjectsUI(); }
 function removeProject(i) { DB.projects.splice(i,1); save(); renderProjectsUI(); }
 
