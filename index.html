@@ -430,9 +430,30 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
         <div class="card"><div class="card-label">Kechikkan</div><div class="metric-val red" id="pr-late">0</div></div>
       </div>
       <div class="card" style="margin-bottom:20px">
-        <div class="section-head"><h2>Barcha loyihalar</h2><button class="action-btn" onclick="clearProjects()">Tozalash</button></div>
-        <table class="data-table"><thead><tr><th>Loyiha</th><th>Mijoz</th><th>PM</th><th>Deadline</th><th>Holat</th><th>Bajarilish</th><th></th></tr></thead>
-        <tbody id="projects-tbody"><tr><td colspan="7" style="color:var(--text3);text-align:center;padding:20px">Loyiha qo'shilmagan</td></tr></tbody></table>
+        <div class="section-head"><h2>Barcha loyihalar</h2></div>
+        <div style="overflow-x:auto;-webkit-overflow-scrolling:touch">
+        <table class="data-table" id="projects-main-table" style="min-width:1600px;font-size:12px"><thead><tr>
+          <th style="min-width:140px;position:sticky;left:0;background:var(--card);z-index:2">Loyiha</th>
+          <th style="min-width:100px">Xizmat</th>
+          <th style="min-width:180px">Mijoz (yuridik)</th>
+          <th style="min-width:80px">PM</th>
+          <th style="min-width:160px">Jamoa</th>
+          <th style="min-width:90px">Boshlanish</th>
+          <th style="min-width:90px">Deadline</th>
+          <th style="min-width:90px">Holat</th>
+          <th style="min-width:130px">Hozirgi status</th>
+          <th style="min-width:100px">Kayfiyat</th>
+          <th style="min-width:100px">Summa ($)</th>
+          <th style="min-width:120px">Summa (UZS)</th>
+          <th style="min-width:80px">To'langan</th>
+          <th style="min-width:80px">Qolgan</th>
+          <th style="min-width:120px">1-to'lov</th>
+          <th style="min-width:120px">2-to'lov</th>
+          <th style="min-width:120px">3-to'lov</th>
+          <th style="min-width:60px">Shartnoma</th>
+        </tr></thead>
+        <tbody id="projects-tbody"><tr><td colspan="18" style="color:var(--text3);text-align:center;padding:20px">Yuklanmoqda...</td></tr></tbody></table>
+        </div>
         <div id="project-add-form">
         <hr class="divider" style="margin:14px 0">
         <div class="form-row">
@@ -1000,7 +1021,16 @@ $
           mood: r["Mijoz kayfiyati (loyihaga nisbatan)"] || '',
           currentStatus: r["Hozir qaysi statusda"] || '',
           contractLink: r["Shartnoma linki"] || '',
-          team: r.Jamoa || ''
+          team: r.Jamoa || '',
+          startDate: r["Loyiha boshlanish sanasi"] || '',
+          amountUZS: r["Shartnoma summasi UZS
+(QQS bilan)"] || r["Shartnoma summasi UZS (QQS bilan)"] || '',
+          remaining: r["Qolgan qismi [Auto]"] || '',
+          paidPct: r["To'lagan qismi [Auto]"] || '',
+          pay1: r["1-to'lov
+(ish boshlashdan avval)"] || r["1-to'lov (ish boshlashdan avval)"] || '',
+          pay2: r["2-to'lov"] || '',
+          pay3: r["3-to'lov"] || ''
         };
       });
 
@@ -1296,38 +1326,45 @@ function renderProjectsUI() {
   const total=visibleProjects.length;
   set('pr-total',total); set('pr-ok',ongoing); set('pr-risk',paused); set('pr-late',cancelled);
   set('ov-projects',ongoing);
-  const lb=document.getElementById('ov-late-badge'); if(lb){lb.textContent=paused+' kutilmoqda';lb.className='delta '+(paused>0?'down':'up');}
+  const lb=document.getElementById('ov-late-badge');
+  if(lb){lb.textContent=paused+' kutilmoqda';lb.className='delta '+(paused>0?'down':'up');}
 
   const tbody=document.getElementById('projects-tbody');
   if(tbody){
-    if(!visibleProjects.length){tbody.innerHTML='<tr><td colspan="7" style="color:var(--text3);text-align:center;padding:20px">Loyiha yo\'q</td></tr>';}
-    else tbody.innerHTML=visibleProjects.map((p,i)=>{
-      const rawS = p.rawStatus || '';
-      const badgeColor = ['Ongoing','Launching'].includes(rawS)?'#4caf7d':rawS==='Finished'?'#5b9cf6':['Paused','Waiting'].includes(rawS)?'#f5a623':'#f05a5a';
-      const badgeBg = ['Ongoing','Launching'].includes(rawS)?'rgba(76,175,125,0.12)':rawS==='Finished'?'rgba(91,156,246,0.12)':['Paused','Waiting'].includes(rawS)?'rgba(245,166,35,0.12)':'rgba(240,90,90,0.12)';
-      const moodColor = p.mood==='Yaxshi'?'#4caf7d':p.mood==='Muammoli'?'#f05a5a':p.mood==='Xavotirli'?'#f5a623':'var(--text3)';
-      const moodIcon = p.mood==='Yaxshi'?'&#128522;':p.mood==='Muammoli'?'&#128543;':p.mood==='Xavotirli'?'&#128560;':'&#128528;';
-      return `<tr>
-        <td style="font-weight:500">
-          \${p.name}
-          \${p.service?'<div style="font-size:11px;color:var(--text3);margin-top:2px">'+p.service+'</div>':''}
-        </td>
-        <td style="color:var(--text3);font-size:12px">\${p.client||'&#8212;'}</td>
-        <td>
-          <div>\${p.pm||'&#8212;'}</div>
-          \${p.team?'<div style="font-size:11px;color:var(--text3)">'+p.team+'</div>':''}
-        </td>
-        <td style="font-size:12px;color:var(--text3)">\${p.deadline||'&#8212;'}</td>
-        <td><span style="background:\${badgeBg};color:\${badgeColor};font-size:11px;padding:3px 8px;border-radius:20px;white-space:nowrap">\${rawS||'&#8212;'}</span></td>
-        <td style="font-size:12px">
-          \${p.amount?'<div style="font-weight:500">$'+p.amount.toLocaleString()+'</div>':'&#8212;'}
-        </td>
-        <td style="font-size:12px">
-          \${p.currentStatus?'<div style="color:var(--text3);font-size:11px">'+p.currentStatus+'</div>':''}
-          \${p.mood?'<div style="color:'+moodColor+'">'+moodIcon+' '+p.mood+'</div>':''}
-        </td>
-      </tr>`;
-    }).join('');
+    if(!visibleProjects.length){
+      tbody.innerHTML='<tr><td colspan="18" style="color:var(--text3);text-align:center;padding:20px">Loyiha yo\'q</td></tr>';
+    } else {
+      tbody.innerHTML=visibleProjects.map(p=>{
+        const rawS = p.rawStatus||'';
+        const sColor = ['Ongoing','Launching'].includes(rawS)?'#4caf7d':rawS==='Finished'?'#5b9cf6':['Paused','Waiting'].includes(rawS)?'#f5a623':rawS==='Cancelled'?'#f05a5a':'#888';
+        const sBg = ['Ongoing','Launching'].includes(rawS)?'rgba(76,175,125,0.12)':rawS==='Finished'?'rgba(91,156,246,0.12)':['Paused','Waiting'].includes(rawS)?'rgba(245,166,35,0.12)':'rgba(240,90,90,0.12)';
+        const mColor = p.mood==='Yaxshi'?'#4caf7d':p.mood==='Muammoli'?'#f05a5a':p.mood==='Xavotirli'?'#f5a623':'var(--text3)';
+        const fmtUZS = v => v ? Number(String(v).replace(/[^0-9.]/g,'')).toLocaleString('ru-RU') : '—';
+        const fmtUSD = v => v ? '$'+Number(String(v).replace(/[^0-9.]/g,'')).toLocaleString() : '—';
+        const fmtDate = v => v ? String(v).split('T')[0] : '—';
+        const contractLink = p.contractLink ? `<a href="${p.contractLink}" target="_blank" style="color:var(--accent);text-decoration:none">&#128196;</a>` : '—';
+        return `<tr style="border-bottom:1px solid var(--border)">
+          <td style="font-weight:500;position:sticky;left:0;background:var(--card);z-index:1;white-space:nowrap">${p.name||'—'}</td>
+          <td style="white-space:nowrap">${p.service||'—'}</td>
+          <td style="font-size:11px;color:var(--text3)">${p.client||'—'}</td>
+          <td style="white-space:nowrap">${p.pm||'—'}</td>
+          <td style="font-size:11px;color:var(--text3)">${p.team||'—'}</td>
+          <td style="color:var(--text3)">${fmtDate(p.startDate)}</td>
+          <td style="color:var(--text3)">${fmtDate(p.deadline)}</td>
+          <td><span style="background:${sBg};color:${sColor};padding:2px 7px;border-radius:20px;white-space:nowrap;font-size:11px">${rawS||'—'}</span></td>
+          <td style="font-size:11px;color:var(--text3);max-width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.currentStatus||'—'}</td>
+          <td style="color:${mColor};white-space:nowrap">${p.mood||'—'}</td>
+          <td style="font-weight:500">${fmtUSD(p.amount)}</td>
+          <td style="font-size:11px;color:var(--text3)">${fmtUZS(p.amountUZS)}</td>
+          <td style="color:#4caf7d">${p.paidPct||'—'}</td>
+          <td style="color:#f5a623">${fmtUZS(p.remaining)}</td>
+          <td style="font-size:11px;color:var(--text3)">${p.pay1||'—'}</td>
+          <td style="font-size:11px;color:var(--text3)">${p.pay2||'—'}</td>
+          <td style="font-size:11px;color:var(--text3)">${p.pay3||'—'}</td>
+          <td style="text-align:center">${contractLink}</td>
+        </tr>`;
+      }).join('');
+    }
   }
 
   ['Izzat','Guli','Nigora'].forEach(pm=>{
