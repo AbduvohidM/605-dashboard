@@ -456,15 +456,23 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
           #proj-scroll-wrap { overflow: auto; max-height: 620px; position: relative; }
           #projects-main-table { border-collapse: separate; border-spacing: 0; font-size:12px; min-width: 1900px; width: 100%; }
           #projects-main-table th, #projects-main-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); white-space: nowrap; }
-          /* Sticky header row */
-          #projects-main-table thead th { position: sticky; top: 0; background: var(--card); z-index: 3; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:.04em; }
+          /* Sticky header */
+          #projects-main-table thead th { position: sticky; top: 0; z-index: 3; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:.04em; }
           /* Sticky first column */
-          #projects-main-table th:first-child,
-          #projects-main-table td:first-child { position: sticky; left: 0; background: var(--card); z-index: 2; font-weight: 500; border-right: 2px solid var(--border); }
-          /* Top-left corner cell */
-          #projects-main-table thead th:first-child { z-index: 4; }
-          #projects-main-table tbody tr:hover td { background: rgba(128,128,128,0.05); }
-          #projects-main-table tbody tr:hover td:first-child { background: var(--card); }
+          #projects-main-table td:first-child { position: sticky; left: 0; z-index: 2; font-weight: 500; border-right: 2px solid var(--border); }
+          #projects-main-table thead th:first-child { position: sticky; left: 0; z-index: 4; border-right: 2px solid var(--border); }
+          /* Light theme */
+          body.light #projects-main-table th { background: #f8f8f6; }
+          body.light #projects-main-table td:first-child { background: #ffffff; }
+          body.light #projects-main-table tbody tr:nth-child(even) td:first-child { background: #f8f8f6; }
+          body.light #projects-main-table tbody tr:nth-child(even) td { background: #f8f8f6; }
+          body.light #projects-main-table tbody tr:hover td { background: #f0f0ee !important; }
+          /* Dark theme */
+          body:not(.light) #projects-main-table th { background: #1e2023; }
+          body:not(.light) #projects-main-table td:first-child { background: #1e2023; }
+          body:not(.light) #projects-main-table tbody tr:nth-child(even) td:first-child { background: #1a1b1e; }
+          body:not(.light) #projects-main-table tbody tr:nth-child(even) td { background: #1a1b1e; }
+          body:not(.light) #projects-main-table tbody tr:hover td { background: #25262a !important; }
         </style>
         <div id="proj-scroll-wrap">
         <table id="projects-main-table"><thead><tr>
@@ -552,9 +560,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
           <div><label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px">1-to'lov izohi</label><input class="db-input" id="pm-pay1note" placeholder="Ish boshlashdan avval" style="width:100%"></div>
           <div><label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px">Shartnoma linki</label><input class="db-input" id="pm-contract" placeholder="https://drive.google.com/..." style="width:100%"></div>
         </div>
-        <div style="margin-top:20px;display:flex;gap:10px;justify-content:flex-end">
-          <button onclick="closeProjectModal()" style="padding:8px 20px;border:1px solid var(--border);border-radius:6px;background:none;color:var(--text2);cursor:pointer;font-family:var(--font)">Bekor</button>
-          <button onclick="saveNewProject()" id="pm-save-btn" style="padding:8px 20px;border:none;border-radius:6px;background:var(--accent);color:#0e0f11;font-weight:500;cursor:pointer;font-family:var(--font)">Saqlash</button>
+        <div style="margin-top:20px;display:flex;gap:10px;justify-content:space-between;align-items:center">
+          <button id="pm-delete-btn" onclick="deleteProject()" style="display:none;padding:8px 16px;border:1px solid rgba(240,90,90,0.4);border-radius:6px;background:rgba(240,90,90,0.1);color:#f05a5a;cursor:pointer;font-family:var(--font);font-size:13px">🗑 O'chirish</button>
+          <div style="display:flex;gap:10px;margin-left:auto">
+            <button onclick="closeProjectModal()" style="padding:8px 20px;border:1px solid var(--border);border-radius:6px;background:none;color:var(--text2);cursor:pointer;font-family:var(--font)">Bekor</button>
+            <button onclick="saveNewProject()" id="pm-save-btn" style="padding:8px 20px;border:none;border-radius:6px;background:var(--accent);color:#0e0f11;font-weight:500;cursor:pointer;font-family:var(--font)">Saqlash</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1484,6 +1495,8 @@ function openEditProjectModal(idx) {
   const btn = document.getElementById('pm-save-btn');
   btn.textContent = 'Yangilash';
   btn.onclick = () => updateProject(p, idx);
+  const delBtn = document.getElementById('pm-delete-btn');
+  if (delBtn) { delBtn.style.display = 'block'; delBtn.onclick = () => deleteProjectByRef(p); }
 }
 
 async function updateProject(p, idx) {
@@ -1523,10 +1536,26 @@ async function updateProject(p, idx) {
   btn.onclick = saveNewProject;
 }
 
+let _projectToDelete = null;
+
+async function deleteProjectByRef(p) {
+  if (!confirm(p.name + " loyihasini o'chirmoqchimisiz?")) return;
+  const origIdx = DB.projects.indexOf(p);
+  if (origIdx >= 0) DB.projects.splice(origIdx, 1);
+  closeProjectModal();
+  renderProjectsUI();
+  // Sheets dan o'chirish uchun - hozircha faqat local
+  // Sheets da o'chirish murakkab (ID kerak), keyinroq qo'shamiz
+}
+
+function deleteProject() {}
+
 function addProject() { 
   openProjectModal();
   document.getElementById('pm-save-btn').textContent = 'Saqlash';
   document.getElementById('pm-save-btn').onclick = saveNewProject;
+  const delBtn = document.getElementById('pm-delete-btn');
+  if (delBtn) delBtn.style.display = 'none';
 }
 function clearProjects() { DB.projects=[]; save(); renderProjectsUI(); }
 function removeProject(i) { DB.projects.splice(i,1); save(); renderProjectsUI(); }
