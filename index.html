@@ -432,9 +432,24 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
       <div class="card" style="margin-bottom:20px">
         <div class="section-head">
           <h2>Barcha loyihalar</h2>
-          <div style="display:flex;align-items:center;gap:10px">
-            <span style="font-size:12px;color:var(--text3)">ProjectStatuses dan ✓</span>
-            <button class="action-btn" onclick="openProjectModal()" style="background:var(--accent);color:#0e0f11;border:none;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer">+ Loyiha qo'shish</button>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <select id="proj-status-filter" onchange="renderProjectsUI()" class="db-input" style="font-size:12px;padding:5px 10px;width:auto">
+              <option value="">Barcha holat</option>
+              <option value="Ongoing">Ongoing</option>
+              <option value="Launching">Launching</option>
+              <option value="Waiting">Waiting</option>
+              <option value="Paused">Paused</option>
+              <option value="Finished">Finished</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+            <select id="proj-pm-filter" onchange="renderProjectsUI()" class="db-input" style="font-size:12px;padding:5px 10px;width:auto">
+              <option value="">Barcha PM</option>
+              <option value="Izzat">Izzat</option>
+              <option value="Guli">Guli</option>
+              <option value="Nigora">Nigora</option>
+            </select>
+            <span style="font-size:12px;color:var(--text3)">ProjectStatuses ✓</span>
+            <button onclick="openProjectModal()" style="background:var(--accent);color:#0e0f11;border:none;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer">+ Loyiha qo'shish</button>
           </div>
         </div>
         <style>
@@ -505,7 +520,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
               <option>Izzatbek</option><option>Nigora</option><option>Guli</option>
             </select>
           </div>
-          <div><label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px">Jamoa</label><input class="db-input" id="pm-team" placeholder="Bekzod, Shukurullo" style="width:100%"></div>
+          <div style="position:relative">
+            <label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px">Jamoa</label>
+            <div id="pm-team-display" onclick="toggleTeamDropdown()" class="db-input" style="width:100%;cursor:pointer;min-height:36px;display:flex;align-items:center;justify-content:space-between;user-select:none">
+              <span id="pm-team-text" style="color:var(--text3)">Tanlang...</span>
+              <span>▾</span>
+            </div>
+            <input type="hidden" id="pm-team" value="">
+            <div id="pm-team-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--card);border:1px solid var(--border);border-radius:8px;z-index:100;max-height:200px;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,0.3)">
+              <div style="padding:8px;border-bottom:1px solid var(--border);font-size:11px;color:var(--text3)">Jamoani tanlang</div>
+              <div id="pm-team-options"></div>
+            </div>
+          </div>
           <div><label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px">Holat</label>
             <select class="db-input" id="pm-status" style="width:100%">
               <option>Ongoing</option><option>Launching</option><option>Waiting</option>
@@ -1310,12 +1336,59 @@ function renderInvoices() {
 // ============ PROJECTS ============
 const statusCfg = { ok:{label:'Vaqtida',cls:'green'}, risk:{label:'Xavf',cls:'amber'}, late:{label:'Kechikkan',cls:'red'} };
 
+// Team members list
+const TEAM_MEMBERS = ['Bekzod','Shukurullo','Jasmina','Laylo','Nosirjon','Shahzod','Mirmuxsin','Sharofiddin','Sayida','Sevara','Dilorom','Xudaybergan'];
+let selectedTeam = [];
+
+function toggleTeamDropdown() {
+  const dd = document.getElementById('pm-team-dropdown');
+  if (dd.style.display === 'none') {
+    // Build options
+    const opts = document.getElementById('pm-team-options');
+    opts.innerHTML = TEAM_MEMBERS.map(m => `
+      <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--border)">
+        <input type="checkbox" value="${m}" ${selectedTeam.includes(m)?'checked':''} onchange="updateTeamSelection(this)" style="cursor:pointer">
+        ${m}
+      </label>`).join('');
+    dd.style.display = 'block';
+    // Close on outside click
+    setTimeout(() => document.addEventListener('click', closeTeamDropdown, {once:true}), 0);
+  } else {
+    dd.style.display = 'none';
+  }
+}
+
+function closeTeamDropdown(e) {
+  const dd = document.getElementById('pm-team-dropdown');
+  const display = document.getElementById('pm-team-display');
+  if (dd && !dd.contains(e.target) && !display.contains(e.target)) {
+    dd.style.display = 'none';
+  }
+}
+
+function updateTeamSelection(cb) {
+  if (cb.checked) { if (!selectedTeam.includes(cb.value)) selectedTeam.push(cb.value); }
+  else { selectedTeam = selectedTeam.filter(m => m !== cb.value); }
+  document.getElementById('pm-team').value = selectedTeam.join(', ');
+  document.getElementById('pm-team-text').textContent = selectedTeam.length ? selectedTeam.join(', ') : 'Tanlang...';
+  document.getElementById('pm-team-text').style.color = selectedTeam.length ? 'var(--text1)' : 'var(--text3)';
+}
+
+function setTeamFromString(str) {
+  selectedTeam = str ? str.split(',').map(s=>s.trim()).filter(Boolean) : [];
+  document.getElementById('pm-team').value = selectedTeam.join(', ');
+  document.getElementById('pm-team-text').textContent = selectedTeam.length ? selectedTeam.join(', ') : 'Tanlang...';
+  document.getElementById('pm-team-text').style.color = selectedTeam.length ? 'var(--text1)' : 'var(--text3)';
+}
+
 function openProjectModal() {
   const m = document.getElementById('project-modal');
   m.style.display = 'flex';
   // Sana default bugun
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('pm-start').value = today;
+  selectedTeam = [];
+  setTeamFromString('');
 }
 function closeProjectModal() {
   document.getElementById('project-modal').style.display = 'none';
@@ -1367,7 +1440,8 @@ async function saveNewProject() {
       closeProjectModal();
       renderProjectsUI();
       // Inputlarni tozalash
-      ['pm-name','pm-client','pm-team','pm-amount','pm-firm','pm-curstatus','pm-pay1','pm-pay1note','pm-contract','pm-start','pm-deadline'].forEach(id => {
+      setTeamFromString('');
+      ['pm-name','pm-client','pm-amount','pm-firm','pm-curstatus','pm-pay1','pm-pay1note','pm-contract','pm-start','pm-deadline'].forEach(id => {
         document.getElementById(id).value = '';
       });
     } else {
@@ -1401,6 +1475,7 @@ function openEditProjectModal(idx) {
   document.getElementById('pm-mood').value = p.mood||'Neytral';
   document.getElementById('pm-pay1').value = p.pay1||'';
   document.getElementById('pm-contract').value = p.contractLink||'';
+  setTeamFromString(p.team||'');
   // PM
   const pmVal = p.pm||'';
   const pmFull = pmVal.includes('Izzat')?'Izzatbek':pmVal.includes('Nigora')?'Nigora':pmVal.includes('Guli')?'Guli':pmVal;
@@ -1511,7 +1586,13 @@ function renderProjectsUI() {
   const pmFilter = currentUser && currentUser.pmFilter;
   const statusOrder = {'Ongoing':0,'Launching':1,'Waiting':2,'Paused':3,'Finished':4,'Cancelled':5};
   const sorted = [...DB.projects].sort((a,b) => (statusOrder[a.rawStatus]??3) - (statusOrder[b.rawStatus]??3));
-  const visibleProjects = pmFilter ? sorted.filter(p => p.pm === pmFilter) : sorted;
+  const statusFilterEl = document.getElementById('proj-status-filter');
+  const pmFilterEl = document.getElementById('proj-pm-filter');
+  const statusFilterVal = statusFilterEl ? statusFilterEl.value : '';
+  const pmFilterVal = pmFilterEl ? pmFilterEl.value : '';
+  let visibleProjects = pmFilter ? sorted.filter(p => p.pm === pmFilter) : sorted;
+  if (statusFilterVal) visibleProjects = visibleProjects.filter(p => p.rawStatus === statusFilterVal);
+  if (pmFilterVal) visibleProjects = visibleProjects.filter(p => p.pm === pmFilterVal);
 
   const ongoing=visibleProjects.filter(p=>['Ongoing','Launching'].includes(p.rawStatus)).length;
   const paused=visibleProjects.filter(p=>['Paused','Waiting'].includes(p.rawStatus)).length;
