@@ -438,21 +438,21 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
           </div>
         </div>
         <style>
-          #projects-main-table { border-collapse: separate; border-spacing: 0; }
+          #proj-scroll-wrap { overflow: auto; max-height: 620px; position: relative; }
+          #projects-main-table { border-collapse: separate; border-spacing: 0; font-size:12px; min-width: 1900px; width: 100%; }
+          #projects-main-table th, #projects-main-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); white-space: nowrap; }
+          /* Sticky header row */
+          #projects-main-table thead th { position: sticky; top: 0; background: var(--card); z-index: 3; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:.04em; }
+          /* Sticky first column */
           #projects-main-table th:first-child,
-          #projects-main-table td:first-child {
-            position: sticky;
-            left: 0;
-            z-index: 2;
-            background: var(--card) !important;
-            box-shadow: 3px 0 6px rgba(0,0,0,0.2);
-            white-space: nowrap;
-          }
-          #projects-main-table th:first-child { z-index: 3; background: var(--card) !important; }
-          #projects-main-table tr:hover td:first-child { background: var(--hover, var(--card)) !important; }
+          #projects-main-table td:first-child { position: sticky; left: 0; background: var(--card); z-index: 2; font-weight: 500; border-right: 2px solid var(--border); }
+          /* Top-left corner cell */
+          #projects-main-table thead th:first-child { z-index: 4; }
+          #projects-main-table tbody tr:hover td { background: rgba(128,128,128,0.05); }
+          #projects-main-table tbody tr:hover td:first-child { background: var(--card); }
         </style>
-        <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;max-height:600px;overflow-y:auto">
-        <table class="data-table" id="projects-main-table" style="min-width:1800px;font-size:12px;border-collapse:collapse"><thead style="position:sticky;top:0;z-index:4;background:var(--card)"><tr>
+        <div id="proj-scroll-wrap">
+        <table id="projects-main-table"><thead><tr>
           <th style="min-width:150px">Loyiha</th>
           <th style="min-width:110px">Xizmat</th>
           <th style="min-width:160px">Mijoz</th>
@@ -471,6 +471,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
           <th style="min-width:130px">2-to'lov</th>
           <th style="min-width:130px">3-to'lov</th>
           <th style="min-width:70px">Shartnoma</th>
+          <th style="min-width:50px"></th>
         </tr></thead>
         <tbody id="projects-tbody"><tr><td colspan="18" style="color:var(--text3);text-align:center;padding:20px">Yuklanmoqda...</td></tr></tbody></table>
         </div>
@@ -1379,7 +1380,79 @@ async function saveNewProject() {
   btn.disabled = false;
 }
 
-function addProject() { openProjectModal(); }
+function openEditProjectModal(idx) {
+  const p = (()=>{
+    const statusOrder = {'Ongoing':0,'Launching':1,'Waiting':2,'Paused':3,'Finished':4,'Cancelled':5};
+    const sorted = [...DB.projects].sort((a,b)=>(statusOrder[a.rawStatus]??3)-(statusOrder[b.rawStatus]??3));
+    return sorted[idx];
+  })();
+  if (!p) return;
+  openProjectModal();
+  // Fill form
+  document.getElementById('pm-name').value = p.name||'';
+  document.getElementById('pm-service').value = p.service||'Creative IMC';
+  document.getElementById('pm-client').value = p.client||'';
+  document.getElementById('pm-team').value = p.team||'';
+  document.getElementById('pm-status').value = p.rawStatus||'Ongoing';
+  document.getElementById('pm-start').value = (p.startDate||'').split('T')[0];
+  document.getElementById('pm-deadline').value = (p.deadline||'').split('T')[0];
+  document.getElementById('pm-amount').value = p.amount||'';
+  document.getElementById('pm-curstatus').value = p.currentStatus||'';
+  document.getElementById('pm-mood').value = p.mood||'Neytral';
+  document.getElementById('pm-pay1').value = p.pay1||'';
+  document.getElementById('pm-contract').value = p.contractLink||'';
+  // PM
+  const pmVal = p.pm||'';
+  const pmFull = pmVal.includes('Izzat')?'Izzatbek':pmVal.includes('Nigora')?'Nigora':pmVal.includes('Guli')?'Guli':pmVal;
+  document.getElementById('pm-pm').value = pmFull;
+  // Save tugmasini update mode ga o'tkazish
+  const btn = document.getElementById('pm-save-btn');
+  btn.textContent = 'Yangilash';
+  btn.onclick = () => updateProject(p, idx);
+}
+
+async function updateProject(p, idx) {
+  const name = document.getElementById('pm-name').value.trim();
+  if (!name) { alert('Loyiha nomi majburiy!'); return; }
+  const pm = document.getElementById('pm-pm').value;
+  const service = document.getElementById('pm-service').value;
+  const client = document.getElementById('pm-client').value.trim();
+  const team = document.getElementById('pm-team').value.trim();
+  const status = document.getElementById('pm-status').value;
+  const start = document.getElementById('pm-start').value;
+  const deadline = document.getElementById('pm-deadline').value;
+  const amount = document.getElementById('pm-amount').value;
+  const curStatus = document.getElementById('pm-curstatus').value.trim();
+  const mood = document.getElementById('pm-mood').value;
+  const pay1 = document.getElementById('pm-pay1').value.trim();
+  const contract = document.getElementById('pm-contract').value.trim();
+
+  const btn = document.getElementById('pm-save-btn');
+  btn.textContent = 'Saqlanmoqda...';
+  btn.disabled = true;
+
+  // Local update
+  const origIdx = DB.projects.indexOf(p);
+  if (origIdx >= 0) {
+    DB.projects[origIdx] = { ...p, name, service, client, team, rawStatus: status,
+      startDate: start, deadline, amount: parseFloat(amount)||0,
+      currentStatus: curStatus, mood, pay1, contractLink: contract,
+      pm: pm.includes('Izzatbek')?'Izzat':pm };
+  }
+
+  closeProjectModal();
+  renderProjectsUI();
+
+  btn.textContent = 'Saqlash';
+  btn.disabled = false;
+  btn.onclick = saveNewProject;
+}
+
+function addProject() { 
+  openProjectModal();
+  document.getElementById('pm-save-btn').textContent = 'Saqlash';
+  document.getElementById('pm-save-btn').onclick = saveNewProject;
+}
 function clearProjects() { DB.projects=[]; save(); renderProjectsUI(); }
 function removeProject(i) { DB.projects.splice(i,1); save(); renderProjectsUI(); }
 
@@ -1436,7 +1509,9 @@ function saveEditProject(i) {
 
 function renderProjectsUI() {
   const pmFilter = currentUser && currentUser.pmFilter;
-  const visibleProjects = pmFilter ? DB.projects.filter(p => p.pm === pmFilter) : DB.projects;
+  const statusOrder = {'Ongoing':0,'Launching':1,'Waiting':2,'Paused':3,'Finished':4,'Cancelled':5};
+  const sorted = [...DB.projects].sort((a,b) => (statusOrder[a.rawStatus]??3) - (statusOrder[b.rawStatus]??3));
+  const visibleProjects = pmFilter ? sorted.filter(p => p.pm === pmFilter) : sorted;
 
   const ongoing=visibleProjects.filter(p=>['Ongoing','Launching'].includes(p.rawStatus)).length;
   const paused=visibleProjects.filter(p=>['Paused','Waiting'].includes(p.rawStatus)).length;
@@ -1463,7 +1538,7 @@ function renderProjectsUI() {
         const contractLink = p.contractLink?`<a href="${p.contractLink}" target="_blank" style="color:var(--accent);text-decoration:none;font-size:16px">&#128196;</a>`:'&#8212;';
         const rowBg = i%2===0?'':'background:rgba(128,128,128,0.03)';
         return `<tr style="border-bottom:1px solid var(--border);${rowBg}">
-          <td style="font-weight:500;white-space:nowrap;background:var(--card)">
+          <td style="font-weight:500">
             ${p.name||'&#8212;'}
           </td>
           <td style="white-space:nowrap;color:var(--text2)">${p.service||'&#8212;'}</td>
@@ -1483,6 +1558,9 @@ function renderProjectsUI() {
           <td style="font-size:11px;color:var(--text3);white-space:nowrap">${fmtUZS(p.pay2)}</td>
           <td style="font-size:11px;color:var(--text3);white-space:nowrap">${fmtUZS(p.pay3)}</td>
           <td style="text-align:center">${contractLink}</td>
+          <td style="text-align:center;white-space:nowrap">
+            <button onclick="openEditProjectModal(${i})" style="background:rgba(200,240,96,0.12);border:1px solid rgba(200,240,96,0.3);color:#c8f060;font-size:11px;padding:3px 10px;border-radius:5px;cursor:pointer;font-family:var(--font)">✏</button>
+          </td>
         </tr>`;
       }).join('');
     }
