@@ -684,15 +684,15 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 // ============ USERS ============
 // Parollar SHA-256 hash formatida — oddiy matn yo'q
 const USERS = {
-  abduvohid: { pass: '5fd09ae20718c1c204baeef132b086f8d594a8c2fe6e29a81fd591fe3a2a46f6', name: 'Abduvohid', role: 'COO',     color: '#c8f060', initials: 'AB', access: ['overview','finance','projects','sales','crm','team','tasks'], pmFilter: null, salesFilter: null },
-  otabek:    { pass: 'ca0298e265cf7cc440cc8171a8023a6ed789b9a01dd9aec1d9fc55c9b50b4b4b', name: 'Otabek',    role: 'CEO',     color: '#5b9cf6', initials: 'OT', access: ['overview','finance','projects','sales','crm','team','tasks'], pmFilter: null, salesFilter: null },
-  finansist: { pass: '2e4924cbac1d4b6a88ff9e432b5f873ae2f2085ece80e974dd6807d3d1e8d67c', name: 'Finansist', role: 'Moliya',  color: '#f5a623', initials: 'FN', access: ['finance','tasks'], pmFilter: null, salesFilter: null },
-  izzat:     { pass: '0409b35dd402f7634b3e273b22a5d11c1db7b47ad5d4fd27f547e6cf1a39c44f', name: 'Izzat',     role: 'PM',      color: '#a78bfa', initials: 'IZ', access: ['projects','tasks'], pmFilter: 'Izzat', salesFilter: null },
-  guli:      { pass: '0409b35dd402f7634b3e273b22a5d11c1db7b47ad5d4fd27f547e6cf1a39c44f', name: 'Guli',      role: 'PM',      color: '#a78bfa', initials: 'GU', access: ['projects','tasks'], pmFilter: 'Guli', salesFilter: null },
-  nigora:    { pass: '0409b35dd402f7634b3e273b22a5d11c1db7b47ad5d4fd27f547e6cf1a39c44f', name: 'Nigora',    role: 'PM',      color: '#a78bfa', initials: 'NI', access: ['projects','tasks'], pmFilter: 'Nigora', salesFilter: null },
-  mirabbos:  { pass: 'ca7a3000e813269d17434ff7045e1ac48d87740be8781a5b6895507cba045765', name: 'Mirabbos',  role: 'Sales',   color: '#f472b6', initials: 'MI', access: ['sales','crm','tasks'], pmFilter: null, salesFilter: 'Mirabbos' },
-  dildora:   { pass: 'ca7a3000e813269d17434ff7045e1ac48d87740be8781a5b6895507cba045765', name: 'Dildora',   role: 'Sales',   color: '#f472b6', initials: 'DI', access: ['sales','crm','tasks'], pmFilter: null, salesFilter: 'Dildora' },
-  nosir:     { pass: 'ca7a3000e813269d17434ff7045e1ac48d87740be8781a5b6895507cba045765', name: 'Nosir',     role: 'Sales',   color: '#f472b6', initials: 'NO', access: ['sales','crm','tasks'], pmFilter: null, salesFilter: 'Nosir' }
+  abduvohid: { pass: '605coo2024', name: 'Abduvohid', role: 'COO',     color: '#c8f060', initials: 'AB', access: ['overview','finance','projects','sales','crm','team','tasks'], pmFilter: null, salesFilter: null },
+  otabek:    { pass: '605ceo2024', name: 'Otabek',    role: 'CEO',     color: '#5b9cf6', initials: 'OT', access: ['overview','finance','projects','sales','crm','team','tasks'], pmFilter: null, salesFilter: null },
+  finansist: { pass: '605fin2024', name: 'Finansist', role: 'Moliya',  color: '#f5a623', initials: 'FN', access: ['finance','tasks'], pmFilter: null, salesFilter: null },
+  izzat:     { pass: '605pm1234', name: 'Izzat',     role: 'PM',      color: '#a78bfa', initials: 'IZ', access: ['projects','tasks'], pmFilter: 'Izzat', salesFilter: null },
+  guli:      { pass: '605pm1234', name: 'Guli',      role: 'PM',      color: '#a78bfa', initials: 'GU', access: ['projects','tasks'], pmFilter: 'Guli', salesFilter: null },
+  nigora:    { pass: '605pm1234', name: 'Nigora',    role: 'PM',      color: '#a78bfa', initials: 'NI', access: ['projects','tasks'], pmFilter: 'Nigora', salesFilter: null },
+  mirabbos:  { pass: '605sales1', name: 'Mirabbos',  role: 'Sales',   color: '#f472b6', initials: 'MI', access: ['sales','crm','tasks'], pmFilter: null, salesFilter: 'Mirabbos' },
+  dildora:   { pass: '605sales1', name: 'Dildora',   role: 'Sales',   color: '#f472b6', initials: 'DI', access: ['sales','crm','tasks'], pmFilter: null, salesFilter: 'Dildora' },
+  nosir:     { pass: '605sales1', name: 'Nosir',     role: 'Sales',   color: '#f472b6', initials: 'NO', access: ['sales','crm','tasks'], pmFilter: null, salesFilter: 'Nosir' }
 };
 
 let currentUser = null;
@@ -702,12 +702,11 @@ async function hashPassword(pwd) {
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
 }
 
-async function doLogin() {
+function doLogin() {
   const u = document.getElementById('login-username').value.trim().toLowerCase();
   const p = document.getElementById('login-password').value;
   const user = USERS[u];
-  const hashed = await hashPassword(p);
-  if (user && user.pass === hashed) {
+  if (user && user.pass === p) {
     loginSuccess(u, user);
   } else {
     const err = document.getElementById('login-error');
