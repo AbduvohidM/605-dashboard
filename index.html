@@ -960,7 +960,7 @@ async function loadFromSheets() {
   showLoader(true);
   try {
     const [finance, projects, deals, kpis, invoices, tasks, amoStats, amoLeads] = await Promise.all([
-      readSheetCSV('Finance'), readSheetCSV('Projects'), readSheetCSV('Sales'),
+      readSheetCSV('Finance'), readSheetCSV('ProjectStatuses'), readSheetCSV('Sales'),
       readSheetCSV('KPI'), readSheetCSV('Invoices'), readSheetCSV('Tasks'),
       readSheetCSV('AMO_Stats'), readSheetCSV('AMO_Leads')
     ]);
@@ -971,10 +971,38 @@ async function loadFromSheets() {
       cfin: Number(finance[0].CF_Kirim)||0, cfout: Number(finance[0].CF_Chiqim)||0
     } : {};
 
-    DB.projects = projects.map(r => ({
-      name: r.Nom, client: r.Mijoz, pm: r.PM,
-      deadline: (r.Deadline||'').split('T')[0], status: r.Holat, pct: Number(r.Foiz)||0
-    }));
+    // ProjectStatuses formatida parse
+    const statusMap = { 'Ongoing': 'ok', 'Launching': 'ok', 'Waiting': 'ok', 'Paused': 'risk', 'Finished': 'ok', 'Cancelled': 'late' };
+    DB.projects = projects
+      .filter(r => r['Barcha loyihalar'] && r['Barcha loyihalar'].trim())
+      .map(r => {
+        const rawStatus = r['Ish statusi'] || '';
+        const status = statusMap[rawStatus] || (rawStatus === 'Ongoing' ? 'ok' : rawStatus === 'Paused' ? 'risk' : rawStatus === 'Cancelled' ? 'late' : 'ok');
+        const pctRaw = r["Ish bajarilish % [Auto]"] || '0';
+        const pct = parseInt(String(pctRaw).replace('%','')) || 0;
+        const amount = String(r["Kelishuv narxi
+$
+(QQS siz)"] || r["Kelishuv narxi $ (QQS siz)"] || '0').replace(/[$,\s]/g,'');
+        const paid = String(r["To'lagan qismi [Auto]"] || '0').replace(/[%\s]/g,'');
+        const pmName = (r.PM||'').trim();
+        const pmShort = pmName.includes('Izzatbek') ? 'Izzat' : pmName.includes('Nigora') ? 'Nigora' : pmName.includes('Guli') ? 'Guli' : pmName;
+        return {
+          name: r['Barcha loyihalar'],
+          client: r['Mijozni yuridik nomi'] || '',
+          pm: pmShort,
+          deadline: (r['Loyiha tugash sana rejasi']||'').split('T')[0],
+          status: rawStatus === 'Finished' ? 'ok' : rawStatus === 'Paused' ? 'risk' : rawStatus === 'Cancelled' ? 'late' : rawStatus === 'Waiting' ? 'risk' : 'ok',
+          pct,
+          service: r.Xizmat || '',
+          rawStatus,
+          amount: parseFloat(amount) || 0,
+          paidPct: parseFloat(paid) || 0,
+          mood: r["Mijoz kayfiyati (loyihaga nisbatan)"] || '',
+          currentStatus: r["Hozir qaysi statusda"] || '',
+          contractLink: r["Shartnoma linki"] || '',
+          team: r.Jamoa || ''
+        };
+      });
 
     DB.deals = deals.map(r => ({
       client: r.Mijoz, service: r.Xizmat, amount: Number(r.Summa)||0,
@@ -1261,32 +1289,42 @@ function renderProjectsUI() {
   const pmFilter = currentUser && currentUser.pmFilter;
   const visibleProjects = pmFilter ? DB.projects.filter(p => p.pm === pmFilter) : DB.projects;
 
-  const ok=visibleProjects.filter(p=>p.status==='ok').length, risk=visibleProjects.filter(p=>p.status==='risk').length, late=visibleProjects.filter(p=>p.status==='late').length, total=visibleProjects.length;
-  set('pr-total',total); set('pr-ok',ok); set('pr-risk',risk); set('pr-late',late);
-  set('ov-projects',total);
-  const lb=document.getElementById('ov-late-badge'); if(lb){lb.textContent=late+' kechikkan';lb.className='delta '+(late>0?'down':'up');}
+  const ongoing=visibleProjects.filter(p=>['Ongoing','Launching'].includes(p.rawStatus)).length;
+  const paused=visibleProjects.filter(p=>['Paused','Waiting'].includes(p.rawStatus)).length;
+  const finished=visibleProjects.filter(p=>p.rawStatus==='Finished').length;
+  const cancelled=visibleProjects.filter(p=>p.rawStatus==='Cancelled').length;
+  const total=visibleProjects.length;
+  set('pr-total',total); set('pr-ok',ongoing); set('pr-risk',paused); set('pr-late',cancelled);
+  set('ov-projects',ongoing);
+  const lb=document.getElementById('ov-late-badge'); if(lb){lb.textContent=paused+' kutilmoqda';lb.className='delta '+(paused>0?'down':'up');}
 
   const tbody=document.getElementById('projects-tbody');
   if(tbody){
-    if(!visibleProjects.length){tbody.innerHTML='<tr><td colspan="7" style="color:var(--text3);text-align:center;padding:20px">Loyiha qo\'shilmagan</td></tr>';}
+    if(!visibleProjects.length){tbody.innerHTML='<tr><td colspan="7" style="color:var(--text3);text-align:center;padding:20px">Loyiha yo\'q</td></tr>';}
     else tbody.innerHTML=visibleProjects.map((p,i)=>{
-      const sc=statusCfg[p.status]||statusCfg.ok, color=p.status==='ok'?'#4caf7d':p.status==='risk'?'#f5a623':'#f05a5a';
-      const realIdx = DB.projects.indexOf(p);
+      const rawS = p.rawStatus || '';
+      const badgeColor = ['Ongoing','Launching'].includes(rawS)?'#4caf7d':rawS==='Finished'?'#5b9cf6':['Paused','Waiting'].includes(rawS)?'#f5a623':'#f05a5a';
+      const badgeBg = ['Ongoing','Launching'].includes(rawS)?'rgba(76,175,125,0.12)':rawS==='Finished'?'rgba(91,156,246,0.12)':['Paused','Waiting'].includes(rawS)?'rgba(245,166,35,0.12)':'rgba(240,90,90,0.12)';
+      const moodColor = p.mood==='Yaxshi'?'#4caf7d':p.mood==='Muammoli'?'#f05a5a':p.mood==='Xavotirli'?'#f5a623':'var(--text3)';
+      const moodIcon = p.mood==='Yaxshi'?'&#128522;':p.mood==='Muammoli'?'&#128543;':p.mood==='Xavotirli'?'&#128560;':'&#128528;';
       return `<tr>
-        <td style="font-weight:500">${p.name}</td>
-        <td style="color:var(--text3)">${p.client||'—'}</td>
-        <td>${p.pm}</td>
-        <td style="font-size:12px;font-family:var(--mono)">${p.deadline||'—'}</td>
-        <td><span class="badge ${sc.cls}">${sc.label}</span></td>
-        <td style="width:100px">
-          <div style="display:flex;align-items:center;gap:6px">
-            <div class="prog-wrap" style="flex:1"><div class="prog-fill" style="width:${p.pct}%;background:${color}"></div></div>
-            <span style="font-size:12px;color:var(--text3);min-width:28px">${p.pct}%</span>
-          </div>
+        <td style="font-weight:500">
+          \${p.name}
+          \${p.service?'<div style="font-size:11px;color:var(--text3);margin-top:2px">'+p.service+'</div>':''}
         </td>
+        <td style="color:var(--text3);font-size:12px">\${p.client||'&#8212;'}</td>
         <td>
-          <button onclick="editProject(${realIdx})" style="background:rgba(200,240,96,0.1);border:1px solid rgba(200,240,96,0.3);cursor:pointer;color:#c8f060;font-size:12px;padding:4px 12px;border-radius:6px;font-family:var(--font)">✏ Edit</button>
-          ${pmFilter?'':'<button onclick="removeProject('+realIdx+')" style="background:none;border:none;cursor:pointer;color:var(--text3);margin-left:6px;font-size:14px">✕</button>'}
+          <div>\${p.pm||'&#8212;'}</div>
+          \${p.team?'<div style="font-size:11px;color:var(--text3)">'+p.team+'</div>':''}
+        </td>
+        <td style="font-size:12px;color:var(--text3)">\${p.deadline||'&#8212;'}</td>
+        <td><span style="background:\${badgeBg};color:\${badgeColor};font-size:11px;padding:3px 8px;border-radius:20px;white-space:nowrap">\${rawS||'&#8212;'}</span></td>
+        <td style="font-size:12px">
+          \${p.amount?'<div style="font-weight:500">$'+p.amount.toLocaleString()+'</div>':'&#8212;'}
+        </td>
+        <td style="font-size:12px">
+          \${p.currentStatus?'<div style="color:var(--text3);font-size:11px">'+p.currentStatus+'</div>':''}
+          \${p.mood?'<div style="color:'+moodColor+'">'+moodIcon+' '+p.mood+'</div>':''}
         </td>
       </tr>`;
     }).join('');
