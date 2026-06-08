@@ -461,27 +461,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
           /* Sticky first column */
           #projects-main-table td:first-child { position: sticky; left: 0; z-index: 2; font-weight: 500; border-right: 2px solid var(--border); }
           #projects-main-table thead th:first-child { position: sticky; left: 0; z-index: 4; border-right: 2px solid var(--border); }
-          /* Default (dark) theme - no data-theme attribute */
-          :root:not([data-theme]) #projects-main-table th { background: #1e2023 !important; }
-          :root:not([data-theme]) #projects-main-table td { background: #16171a !important; }
-          :root:not([data-theme]) #projects-main-table td:first-child { background: #16171a !important; }
-          :root:not([data-theme]) #projects-main-table tbody tr:nth-child(even) td { background: #1a1b1e !important; }
-          :root:not([data-theme]) #projects-main-table tbody tr:nth-child(even) td:first-child { background: #1a1b1e !important; }
-          :root:not([data-theme]) #projects-main-table tbody tr:hover td { background: #25262a !important; }
-          /* Light theme */
-          [data-theme="light"] #projects-main-table th { background: #f5f5f3 !important; }
-          [data-theme="light"] #projects-main-table td { background: #ffffff !important; }
-          [data-theme="light"] #projects-main-table td:first-child { background: #ffffff !important; }
-          [data-theme="light"] #projects-main-table tbody tr:nth-child(even) td { background: #f8f8f6 !important; }
-          [data-theme="light"] #projects-main-table tbody tr:nth-child(even) td:first-child { background: #f8f8f6 !important; }
-          [data-theme="light"] #projects-main-table tbody tr:hover td { background: #eeeeec !important; }
-          /* Dark theme */
-          [data-theme="dark"] #projects-main-table th { background: #1e2023 !important; }
-          [data-theme="dark"] #projects-main-table td { background: #16171a !important; }
-          [data-theme="dark"] #projects-main-table td:first-child { background: #16171a !important; }
-          [data-theme="dark"] #projects-main-table tbody tr:nth-child(even) td { background: #1a1b1e !important; }
-          [data-theme="dark"] #projects-main-table tbody tr:nth-child(even) td:first-child { background: #1a1b1e !important; }
-          [data-theme="dark"] #projects-main-table tbody tr:hover td { background: #25262a !important; }
+          /* All themes - use CSS variables */
+          #projects-main-table th { background: var(--bg3) !important; }
+          #projects-main-table td { background: var(--bg2) !important; }
+          #projects-main-table td:first-child { background: var(--bg2) !important; }
+          #projects-main-table tbody tr:nth-child(even) td { background: var(--bg3) !important; }
+          #projects-main-table tbody tr:nth-child(even) td:first-child { background: var(--bg3) !important; }
+          #projects-main-table tbody tr:hover td { background: var(--bg4) !important; }
         </style>
         <div id="proj-scroll-wrap">
         <table id="projects-main-table"><thead><tr>
